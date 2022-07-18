@@ -2,14 +2,10 @@ package main
 
 import (
 	"fmt"
-
 	"oceane/dealgen"
 )
 
 func main() {
-	d := new(dealgen.Desk)
-	d.Init()
-	t := make([]int, dealgen.N_CARDS)
-	t = dealgen.FYShuffle(dealgen.N_CARDS)
-	fmt.Println(t)
+	r := dealgen.FYShuffle(52)
+	fmt.Println(dealgen.PbnDeal(0, 0, 0, r))
 }
