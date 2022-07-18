@@ -1,6 +1,9 @@
 package dealgen
 
-import "sort"
+import (
+	"encoding/json"
+	"sort"
+)
 
 func (c CardList) Shuffle(a []int) []int {
 	v := make([]int, len(a))
@@ -30,15 +33,20 @@ func convertCardsToString(a []int) string {
 	return r
 }
 
+func sortHand(h []int) []int {
+	sort.Slice(h, func(i, j int) bool {
+		return CardValueInt(h[i]) > CardValueInt(h[j])
+	})
+	return h
+}
+
 func handPbn(h []int) string {
 	r := ""
 
 	for i := 0; i <= 3; i++ {
 		var v []int
 		v = append(v, getSuitFromHand(h, i)...)
-		sort.Slice(v, func(i, j int) bool {
-			return CardValueInt(v[i]) > CardValueInt(v[j])
-		})
+		v = sortHand(v)
 		r += convertCardsToString(v)
 		if i < 3 {
 			r += "."
@@ -46,11 +54,20 @@ func handPbn(h []int) string {
 	}
 	return r
 }
-func PbnDealSimple(a []int) string {
+
+func pointsFromHand(h []int) int {
+	v := 0
+	for _, value := range h {
+		v += valueCards[CardValueInt(value)]
+	}
+	return v
+}
+
+func pbnDealSimple(a []int) string {
 	var h []int
 	r := ""
 	for i := 0; i <= 3; i++ {
-		h = a[i*13 : i*13+13]
+		h = a[i*N_HANDS : i*N_HANDS+N_HANDS]
 		r += handPbn(h)
 		if i < 3 {
 			r += " "
@@ -59,11 +76,43 @@ func PbnDealSimple(a []int) string {
 	return r
 }
 
-func PbnDeal(firstHand, dealer, vul int, a []int) string {
+func pbnDeal(firstHand, dealer, vul int, a []int) string {
 	r := "[Dealer \"" + position[dealer] + "\"]\n"
 	r += "[Vulnerable \"" + vulnerable[vul] + "\"]\n"
 	r += "[Deal \"" + position[firstHand] + ":"
-	r += PbnDealSimple(a)
+	r += pbnDealSimple(a)
 	r += "\"]"
 	return r
+}
+
+func getHandPoints(r result, a []int) result {
+	for i := 0; i <= 3; i++ {
+		r.HandPoints[i] = pointsFromHand(a[i*N_HANDS : i*N_HANDS+N_HANDS])
+	}
+	return r
+}
+
+func getSuitPoints(r result, a []int) result {
+	for i := 0; i <= 3; i++ {
+		for j := 0; j <= 3; j++ {
+			s := make([]int, len(getSuitFromHand(a[i*N_HANDS:i*N_HANDS+N_HANDS], j)))
+			s = getSuitFromHand(sortHand(a[i*N_HANDS:i*N_HANDS+N_HANDS]), j)
+			r.Suit[i][j] = append(r.Suit[i][j], s...)
+		}
+	}
+	return r
+}
+
+func structDeal(firstHand, dealer, vul int, a []int) result {
+	var r result
+	r.PbnSimple = pbnDealSimple(a)
+	r.Pbn = pbnDeal(firstHand, dealer, vul, a)
+	r = getHandPoints(r, a)
+	r = getSuitPoints(r, a)
+	return r
+}
+func JsonStructDeal(firstHand, dealer, vul int, a []int) string {
+	result := structDeal(firstHand, dealer, vul, a)
+	r, _ := json.Marshal(result)
+	return string(r)
 }
