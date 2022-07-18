@@ -18,3 +18,6 @@ var (
 	valueCards = []int{0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4}
 	vulnerable = []string{"ALL", "NS", "EW", "NONE"}
 )
+
+// NbDist Number of different distribution CNP(52,13)*CNP(39,13)*CNP(26,13)
+const NbDist = "53644737765488792839237440000"

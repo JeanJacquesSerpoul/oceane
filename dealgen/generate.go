@@ -2,8 +2,30 @@ package dealgen
 
 import (
 	"encoding/json"
+	"math/rand"
 	"sort"
+	"time"
 )
+
+func init() {
+	rand.Seed(time.Now().UnixNano())
+}
+
+// Shuffle Implement Fisher and Yates shuffle method
+func FYShuffle(n int) []int {
+	var random, temp int
+	t := make([]int, n)
+	for i := range t {
+		t[i] = i
+	}
+	for i := len(t) - 1; i >= 0; i-- {
+		temp = t[i]
+		random = rand.Intn(i + 1)
+		t[i] = t[random]
+		t[random] = temp
+	}
+	return t
+}
 
 func (c CardList) Shuffle(a []int) []int {
 	v := make([]int, len(a))
@@ -63,7 +85,7 @@ func pointsFromHand(h []int) int {
 	return v
 }
 
-func pbnDealSimple(a []int) string {
+func PbnDealSimple(a []int) string {
 	var h []int
 	r := ""
 	for i := 0; i <= 3; i++ {
@@ -80,7 +102,7 @@ func pbnDeal(firstHand, dealer, vul int, a []int) string {
 	r := "[Dealer \"" + position[dealer] + "\"]\n"
 	r += "[Vulnerable \"" + vulnerable[vul] + "\"]\n"
 	r += "[Deal \"" + position[firstHand] + ":"
-	r += pbnDealSimple(a)
+	r += PbnDealSimple(a)
 	r += "\"]"
 	return r
 }
@@ -105,7 +127,7 @@ func getSuitPoints(r result, a []int) result {
 
 func structDeal(firstHand, dealer, vul int, a []int) result {
 	var r result
-	r.PbnSimple = pbnDealSimple(a)
+	r.PbnSimple = PbnDealSimple(a)
 	r.Pbn = pbnDeal(firstHand, dealer, vul, a)
 	r = getHandPoints(r, a)
 	r = getSuitPoints(r, a)
