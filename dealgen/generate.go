@@ -104,6 +104,34 @@ func getSuitFromHand(h []int, suitValue int) []int {
 	}
 	return r
 }
+
+func MaskStrToMaskInt(v string) []int {
+	var a []int
+	for i := 0; i < len(v); i++ {
+		x := string(v[i])
+		if (x == "2") || (x == "3") || (x == "4") || (x == "5") || (x == "6") || (x == "7") || (x == "8") || (x == "9") {
+			t, _ := strconv.Atoi(x)
+			t -= 2
+			a = append(a, t)
+		}
+		if x == "T" {
+			a = append(a, 8)
+		}
+		if x == "J" {
+			a = append(a, 9)
+		}
+		if x == "Q" {
+			a = append(a, 10)
+		}
+		if x == "K" {
+			a = append(a, 11)
+		}
+		if x == "A" {
+			a = append(a, 12)
+		}
+	}
+	return a
+}
 func getFaceCard(v int) string {
 	if v <= 7 {
 		return strconv.Itoa(v + 2)

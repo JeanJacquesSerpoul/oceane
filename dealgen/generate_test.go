@@ -404,3 +404,23 @@ func Test_getFaceCard(t *testing.T) {
 		})
 	}
 }
+
+func TestMaskStrToMaskInt(t *testing.T) {
+	type args struct {
+		v string
+	}
+	tests := []struct {
+		name string
+		args args
+		want []int
+	}{
+		{"Test1", args{"AKQJT98765432"}, []int{12, 11, 10, 9, 8, 7, 6, 5, 4, 3, 2, 1, 0}},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := MaskStrToMaskInt(tt.args.v); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("MaskStrToMaskInt() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
