@@ -28,7 +28,7 @@ func (rd Random) fYShuffle(n int) []int {
 	return t
 }
 
-func FreeRandom(sh ShuffleInterface, a []int) []int {
+func freeRandom(sh ShuffleInterface, a []int) []int {
 	r := sh.fYShuffle(len(a))
 	t := make([]int, len(a))
 	for i, value := range r {
@@ -64,7 +64,7 @@ func cardSuitToValue(cardValue, suit int) int {
 	return (cardValue << 2) + suit
 }
 
-func DealMaskSuit(maskSuit []int, suit int) []int {
+func dealMaskSuit(maskSuit []int, suit int) []int {
 	var r []int
 	for _, value := range maskSuit {
 		v := cardSuitToValue(value, suit)
@@ -72,10 +72,15 @@ func DealMaskSuit(maskSuit []int, suit int) []int {
 	}
 	return r
 }
+func DealMaskString(sh ShuffleInterface, deal []int, mask string, suit, hand int) string {
+	maskSuit := maskStrToMaskInt(mask)
+	r := dealMask(sh, deal, maskSuit, suit, hand)
+	return pbnDealSimple(r)
+}
 
-func DealMask(sh ShuffleInterface, deal, maskSuit []int, suit, hand int) []int {
+func dealMask(sh ShuffleInterface, deal, maskSuit []int, suit, hand int) []int {
 	var r, d, mask []int
-	dm := DealMaskSuit(maskSuit, suit)
+	dm := dealMaskSuit(maskSuit, suit)
 	for range deal {
 		mask = append(mask, -1)
 	}
@@ -83,7 +88,7 @@ func DealMask(sh ShuffleInterface, deal, maskSuit []int, suit, hand int) []int {
 		mask[hand*N_HANDS+i] = value
 	}
 	d = delta(deal, mask)
-	s := FreeRandom(sh, d)
+	s := freeRandom(sh, d)
 	k := 0
 	for i, value := range mask {
 		if value >= 0 && (i >= hand*N_HANDS && i < hand*N_HANDS+N_HANDS) {
@@ -110,7 +115,7 @@ func getSuitFromHand(h []int, suitValue int) []int {
 	return r
 }
 
-func MaskStrToMaskInt(v string) []int {
+func maskStrToMaskInt(v string) []int {
 	var a []int
 	for i := 0; i < len(v); i++ {
 		x := string(v[i])
@@ -204,7 +209,7 @@ func pointsFromHand(h []int) int {
 	return v
 }
 
-func PbnDealSimple(a []int) string {
+func pbnDealSimple(a []int) string {
 	var h []int
 	r := ""
 	for i := 0; i <= 3; i++ {
@@ -221,7 +226,7 @@ func pbnDeal(firstHand, dealer, vul int, a []int) string {
 	r := "[Dealer \"" + position[dealer] + "\"]\n"
 	r += "[Vulnerable \"" + vulnerable[vul] + "\"]\n"
 	r += "[Deal \"" + position[firstHand] + ":"
-	r += PbnDealSimple(a)
+	r += pbnDealSimple(a)
 	r += "\"]"
 	return r
 }
@@ -246,7 +251,7 @@ func getSuitPoints(r result, a []int) result {
 
 func structDeal(firstHand, dealer, vul int, a []int) result {
 	var r result
-	r.PbnSimple = PbnDealSimple(a)
+	r.PbnSimple = pbnDealSimple(a)
 	r.Pbn = pbnDeal(firstHand, dealer, vul, a)
 	r = getHandPoints(r, a)
 	r = getSuitPoints(r, a)

@@ -12,7 +12,6 @@ func main() {
 		36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51,
 	}
 	var sh dealgen.Random
-	v := dealgen.MaskStrToMaskInt("AQJT98765432")
-	s := dealgen.DealMask(sh, deal, v, 1, 3)
-	fmt.Println(dealgen.PbnDealSimple(s))
+	r := dealgen.DealMaskString(sh, deal, "AKQJT98765432", 1, 3)
+	fmt.Println(r)
 }

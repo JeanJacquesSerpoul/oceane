@@ -266,7 +266,7 @@ func Test_pbnDealSimple(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := PbnDealSimple(tt.args.a); got != tt.want {
+			if got := pbnDealSimple(tt.args.a); got != tt.want {
 				t.Errorf("pbnDealSimple() = %v, want %v", got, tt.want)
 			}
 		})
@@ -361,7 +361,7 @@ func TestFreeRandom(t *testing.T) {
 	var sh FakeRandom
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := FreeRandom(sh, tt.args.a); !reflect.DeepEqual(got, tt.want) {
+			if got := freeRandom(sh, tt.args.a); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("FreeRandom() = %v, want %v", got, tt.want)
 			}
 		})
@@ -385,7 +385,7 @@ func TestDealMask(t *testing.T) {
 	var sh FakeRandom
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := DealMask(sh, tt.args.deal, tt.args.maskSuit, tt.args.suit, tt.args.hand); !reflect.DeepEqual(got, tt.want) {
+			if got := dealMask(sh, tt.args.deal, tt.args.maskSuit, tt.args.suit, tt.args.hand); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("DealMask() = %v, want %v", got, tt.want)
 			}
 		})
@@ -425,8 +425,32 @@ func TestMaskStrToMaskInt(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := MaskStrToMaskInt(tt.args.v); !reflect.DeepEqual(got, tt.want) {
+			if got := maskStrToMaskInt(tt.args.v); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("MaskStrToMaskInt() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestDealMaskString(t *testing.T) {
+	type args struct {
+		deal []int
+		mask string
+		suit int
+		hand int
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{"Test1", args{mockInitDeal, "AKQJT98765432", 1, 2}, "Q86..KJT83.AKQJ9 KJ975..Q965.7532 .AKQJT98765432.. AT432..A742.T864"},
+	}
+	var sh FakeRandom
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := DealMaskString(sh, tt.args.deal, tt.args.mask, tt.args.suit, tt.args.hand); got != tt.want {
+				t.Errorf("DealMaskString() = %v, want %v", got, tt.want)
 			}
 		})
 	}
