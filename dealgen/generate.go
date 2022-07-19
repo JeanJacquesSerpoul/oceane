@@ -2,6 +2,7 @@ package dealgen
 
 import (
 	"encoding/json"
+	"fmt"
 	"math/rand"
 	"sort"
 	"strconv"
@@ -72,10 +73,19 @@ func dealMaskSuit(maskSuit []int, suit int) []int {
 	}
 	return r
 }
-func DealMaskString(sh ShuffleInterface, mask string, suit, hand int) string {
+func DealMaskString(sh ShuffleInterface, mask string, suit, hand int) (string, error) {
+	if !(suit >= 0 && suit <= 3) {
+		err := fmt.Errorf(ERROR_SUIT)
+		return "", err
+	}
+	if !(hand >= 0 && hand <= 3) {
+		err := fmt.Errorf(ERROR_HAND)
+		return "", err
+	}
+
 	maskSuit := maskStrToMaskInt(mask)
 	r := dealMask(sh, InitDeal, maskSuit, suit, hand)
-	return pbnDealSimple(r)
+	return pbnDealSimple(r), nil
 }
 
 func dealMask(sh ShuffleInterface, deal, maskSuit []int, suit, hand int) []int {

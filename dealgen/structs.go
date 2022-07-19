@@ -1,13 +1,15 @@
 package dealgen
 
 const (
-	N_CARDS  = 52
-	N_HANDS  = 13
-	FOUR     = 4
-	UNDEF    = "?"
-	ERRORMSG = "ERROR!"
-	POINT    = "."
-	SPACE    = " "
+	N_CARDS    = 52
+	N_HANDS    = 13
+	FOUR       = 4
+	UNDEF      = "?"
+	ERRORMSG   = "ERROR!"
+	POINT      = "."
+	SPACE      = " "
+	ERROR_SUIT = "Suit should be beetween 0 (Spade) and 3 (Club)"
+	ERROR_HAND = "Hand should be beetween 0 (North) and 3 (West)"
 )
 
 var InitDeal = []int{

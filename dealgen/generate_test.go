@@ -439,16 +439,24 @@ func TestDealMaskString(t *testing.T) {
 		hand int
 	}
 	tests := []struct {
-		name string
-		args args
-		want string
+		name    string
+		args    args
+		want    string
+		wantErr bool
 	}{
-		{"Test1", args{"AKQJT98765432", 1, 2}, "KT..AQJ98753.AKQ A872..KT64.T8753 .AKQJT98765432.. QJ96543..2.J9642"},
+		{"Test1", args{"AKQJT98765432", 1, 2}, "KT..AQJ98753.AKQ A872..KT64.T8753 .AKQJT98765432.. QJ96543..2.J9642", false},
+		{"Test1", args{"AKQJT98765432", 8, 2}, "", true},
+		{"Test1", args{"AKQJT98765432", 1, 8}, "", true},
 	}
 	var sh FakeRandom
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := DealMaskString(sh, tt.args.mask, tt.args.suit, tt.args.hand); got != tt.want {
+			got, err := DealMaskString(sh, tt.args.mask, tt.args.suit, tt.args.hand)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("DealMaskString() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
 				t.Errorf("DealMaskString() = %v, want %v", got, tt.want)
 			}
 		})
