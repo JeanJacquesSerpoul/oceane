@@ -25,11 +25,23 @@ var mockInitDeal = []int{
 	17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
 	36, 37, 38, 39, 40, 41, 42, 43, 44, 9, 46, 47, 48, 49, 50, 51,
 }
+var mockRandom = []int{
+	44, 39, 13, 33, 43, 37, 47, 51, 28, 0, 14, 46, 48, 35, 21, 27,
+	30, 40, 42, 3, 22, 31, 17, 36, 19, 5, 25, 24, 10, 20, 26,
+	50, 49, 45, 4, 38, 6, 16, 23, 32, 2, 29, 41, 34, 8, 1, 9, 18, 12, 15, 11, 7,
+}
 
+var mockResultRandom = []int{
+	3, 44, 48, 19, 30, 13, 28, 9, 47, 40, 36, 39, 42, 11, 2, 43, 27,
+	16, 41, 14, 35, 24, 18, 26, 37, 38, 34, 23, 4, 49, 22, 17, 50, 10, 46, 25,
+	15, 5, 29, 12, 21, 51, 20, 8, 45, 31, 1, 6, 0, 32, 33, 7,
+}
 var mockHand = []int{
 	17, 18, 19, 20, 21, 22, 45, 24, 25, 26, 50, 28, 29,
 }
-
+var mockHandWithUndef = []int{
+	17, 18, 19, 20, -1, 22, 45, 24, 25, 26, 50, 28, 29,
+}
 var mockSuitHand = []int{
 	17, 21, 45, 25, 29,
 }
@@ -45,22 +57,38 @@ var (
 [Deal "N:5432.K32.432.432 876.8765.765.765 JT9.JT9.JT98.T98 AKQ.AQ4.AKQ.AKQJ"]`
 )
 
-type fakeRandom struct {
+var mockDealMask = []int{
+	0, 1, 2, 3, -1, -1, -1, 7, 8, 9, 10, -1, 12, 13, 14, 15, 16,
+	17, 18, 19, 20, 21, -1, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
+	36, 37, 38, 39, -1, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51,
+}
+var mockResultDealMask = []int{
+	0, 1, 2, 3, 11, 40, 22, 7, 8, 9, 10, 5, 12, 13, 14,
+	15, 16, 17, 18, 19, 20, 21, 4, 23, 24, 25, 26, 27, 28, 29,
+	30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 6, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51,
 }
 
-func (test fakeRandom) fYShuffle(n int) []int {
-	var random, temp int
-	t := make([]int, n)
-	for i := 0; i < n; i++ {
-		t[i] = i
+var mockMaskSuite = []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
+var mockResultMaskSuite = []int{
+	6, 46, 26, 24, 34, 16, 31, 39, 51, 47, 38, 43, 40, 12, 7,
+	42, 30, 20, 44, 18, 36, 3, 23, 28, 14, 15, 1, 5, 9, 13, 17,
+	21, 25, 29, 33, 37, 41, 45, 49, 35, 2, 8, 50, 0, 22, 27, 11, 48, 4, 19, 10, 32,
+}
+
+type FakeRandom struct {
+}
+
+func extractRandom(a []int, n int) []int {
+	var r []int
+	for i := 0; i < N_CARDS; i++ {
+		if a[i] < n {
+			r = append(r, a[i])
+		}
 	}
-	for i := len(t) - 1; i >= 0; i-- {
-		temp = t[i]
-		random = i
-		t[i] = t[random]
-		t[random] = temp
-	}
-	return t
+	return r
+}
+func (test FakeRandom) fYShuffle(n int) []int {
+	return extractRandom(mockRandom, n)
 }
 
 func Test_fYshuffle(t *testing.T) {
@@ -126,6 +154,7 @@ func Test_convertCardsToString(t *testing.T) {
 		want string
 	}{
 		{"Test1", args{mockHand}, "666777K888A99"},
+		{"Test1", args{mockHandWithUndef}, "6667?7K888A99"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -230,7 +259,7 @@ func Test_pbnDealSimple(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := pbnDealSimple(tt.args.a); got != tt.want {
+			if got := PbnDealSimple(tt.args.a); got != tt.want {
 				t.Errorf("pbnDealSimple() = %v, want %v", got, tt.want)
 			}
 		})
@@ -320,13 +349,57 @@ func TestFreeRandom(t *testing.T) {
 		args args
 		want []int
 	}{
-		{"Test1", args{mockInitDeal}, mockInitDeal},
+		{"Test1", args{mockInitDeal}, mockResultRandom},
 	}
-	var sh fakeRandom
+	var sh FakeRandom
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := FreeRandom(sh, tt.args.a); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("FreeRandom() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestDealMask(t *testing.T) {
+	type args struct {
+		deal     []int
+		maskSuit []int
+		suit     int
+		hand     int
+	}
+	tests := []struct {
+		name string
+		args args
+		want []int
+	}{
+		{"Test1", args{mockInitDeal, mockMaskSuite, 1, 2}, mockResultMaskSuite},
+	}
+	var sh FakeRandom
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := DealMask(sh, tt.args.deal, tt.args.maskSuit, tt.args.suit, tt.args.hand); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("DealMask() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_getFaceCard(t *testing.T) {
+	type args struct {
+		v int
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{"Test1", args{100}, ERRORMSG},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := getFaceCard(tt.args.v); got != tt.want {
+				t.Errorf("getFaceCard() = %v, want %v", got, tt.want)
 			}
 		})
 	}

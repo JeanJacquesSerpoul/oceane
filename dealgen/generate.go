@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"math/rand"
 	"sort"
+	"strconv"
 	"time"
 )
 
@@ -35,6 +36,60 @@ func FreeRandom(sh ShuffleInterface, a []int) []int {
 	}
 	return t
 }
+func intInSlice(a int, list []int) int {
+	for _, vlist := range list {
+		if vlist == a {
+			return a
+		}
+	}
+	return -1
+}
+func delta(slice []int, ToRemove []int) []int {
+	var diff []int
+
+	var n int
+
+	for _, vslice := range slice {
+		n = intInSlice(vslice, ToRemove)
+		if n < 0 {
+			diff = append(diff, vslice)
+		}
+	}
+	return diff
+}
+func cardSuitToValue(cardValue, suit int) int {
+	return (cardValue << 2) + suit
+}
+func DealMaskSuit(maskSuit []int, suit int) []int {
+	var r []int
+	for _, value := range maskSuit {
+		v := cardSuitToValue(value, suit)
+		r = append(r, v)
+	}
+	return r
+}
+func DealMask(sh ShuffleInterface, deal, maskSuit []int, suit, hand int) []int {
+	var r, d, mask []int
+	dm := DealMaskSuit(maskSuit, suit)
+	for range deal {
+		mask = append(mask, -1)
+	}
+	for i, value := range dm {
+		mask[hand*N_HANDS+i] = value
+	}
+	d = delta(deal, mask)
+	s := FreeRandom(sh, d)
+	k := 0
+	for i, value := range mask {
+		if value >= 0 && (i >= hand*N_HANDS && i < hand*N_HANDS+N_HANDS) {
+			r = append(r, value)
+		} else {
+			r = append(r, s[k])
+			k++
+		}
+	}
+	return r
+}
 
 func cardValueInt(cardValue int) int { return cardValue >> 2 }
 
@@ -49,11 +104,37 @@ func getSuitFromHand(h []int, suitValue int) []int {
 	}
 	return r
 }
-
+func getFaceCard(v int) string {
+	if v <= 7 {
+		return strconv.Itoa(v + 2)
+	} else {
+		if v == 8 {
+			return "T"
+		}
+		if v == 9 {
+			return "J"
+		}
+		if v == 10 {
+			return "Q"
+		}
+		if v == 11 {
+			return "K"
+		}
+		if v == 12 {
+			return "A"
+		}
+	}
+	return ERRORMSG
+}
 func convertCardsToString(a []int) string {
 	r := ""
 	for _, value := range a {
-		r += faceCards[cardValueInt(value)]
+		if value == -1 {
+			r += UNDEF
+		} else {
+			v := cardValueInt(value)
+			r += getFaceCard(v)
+		}
 	}
 	return r
 }
@@ -88,7 +169,7 @@ func pointsFromHand(h []int) int {
 	return v
 }
 
-func pbnDealSimple(a []int) string {
+func PbnDealSimple(a []int) string {
 	var h []int
 	r := ""
 	for i := 0; i <= 3; i++ {
@@ -105,7 +186,7 @@ func pbnDeal(firstHand, dealer, vul int, a []int) string {
 	r := "[Dealer \"" + position[dealer] + "\"]\n"
 	r += "[Vulnerable \"" + vulnerable[vul] + "\"]\n"
 	r += "[Deal \"" + position[firstHand] + ":"
-	r += pbnDealSimple(a)
+	r += PbnDealSimple(a)
 	r += "\"]"
 	return r
 }
@@ -130,7 +211,7 @@ func getSuitPoints(r result, a []int) result {
 
 func structDeal(firstHand, dealer, vul int, a []int) result {
 	var r result
-	r.PbnSimple = pbnDealSimple(a)
+	r.PbnSimple = PbnDealSimple(a)
 	r.Pbn = pbnDeal(firstHand, dealer, vul, a)
 	r = getHandPoints(r, a)
 	r = getSuitPoints(r, a)
