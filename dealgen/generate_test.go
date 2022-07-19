@@ -44,7 +44,6 @@ var (
 [Vulnerable "EW"]
 [Deal "N:5432.K32.432.432 876.8765.765.765 JT9.JT9.JT98.T98 AKQ.AQ4.AKQ.AKQJ"]`
 )
-var mockIndex = "53448280378190633304670135319"
 
 type fakeRandom struct {
 }
