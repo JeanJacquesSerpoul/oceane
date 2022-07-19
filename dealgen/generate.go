@@ -12,7 +12,7 @@ func init() {
 }
 
 // Shuffle Implement Fisher and Yates shuffle method
-func (rd *Random) fYShuffle(n int) []int {
+func (rd Random) fYShuffle(n int) []int {
 	var random, temp int
 	t := make([]int, n)
 	for i := range t {

@@ -48,7 +48,7 @@ var (
 type fakeRandom struct {
 }
 
-func (test *fakeRandom) fYShuffle(n int) []int {
+func (test fakeRandom) fYShuffle(n int) []int {
 	var random, temp int
 	t := make([]int, n)
 	for i := 0; i < n; i++ {
@@ -64,8 +64,8 @@ func (test *fakeRandom) fYShuffle(n int) []int {
 }
 
 func Test_fYshuffle(t *testing.T) {
+	var sh Random
 	t.Parallel()
-	sh := new(Random)
 	t1 := sh.fYShuffle(N_CARDS)
 	t2 := sh.fYShuffle(N_CARDS)
 	if reflect.DeepEqual(t1, t2) {
