@@ -310,3 +310,24 @@ func TestJsonStructDeal(t *testing.T) {
 		})
 	}
 }
+
+func TestFreeRandom(t *testing.T) {
+	type args struct {
+		a []int
+	}
+	tests := []struct {
+		name string
+		args args
+		want []int
+	}{
+		{"Test1", args{mockInitDeal}, mockInitDeal},
+	}
+	var sh fakeRandom
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := FreeRandom(sh, tt.args.a); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("FreeRandom() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

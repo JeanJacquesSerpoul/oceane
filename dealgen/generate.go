@@ -27,6 +27,15 @@ func (rd Random) fYShuffle(n int) []int {
 	return t
 }
 
+func FreeRandom(sh ShuffleInterface, a []int) []int {
+	r := sh.fYShuffle(len(a))
+	t := make([]int, len(a))
+	for i, value := range r {
+		t[value] = a[i]
+	}
+	return t
+}
+
 func cardValueInt(cardValue int) int { return cardValue >> 2 }
 
 func cardSuitInt(cardValue int) int { return cardValue & 3 }
