@@ -8,8 +8,7 @@ import (
 
 var mockResultPbn = result{
 	"5432.K32.432.432 876.8765.765.765 JT9.JT9.JT98.T98 AKQ.AQ4.AKQ.AKQJ",
-	`% Index: 53448280378190633304670135319
-[Dealer "E"]
+	`[Dealer "E"]
 [Vulnerable "EW"]
 [Deal "N:5432.K32.432.432 876.8765.765.765 JT9.JT9.JT98.T98 AKQ.AQ4.AKQ.AKQJ"]`,
 	[4]int{3, 0, 3, 34},
@@ -41,8 +40,7 @@ var mockSortHand = []int{
 var (
 	mockStringHand = "987.K9876.A876.6"
 	mockPbnSimple  = "5432.K32.432.432 876.8765.765.765 JT9.JT9.JT98.T98 AKQ.AQ4.AKQ.AKQJ"
-	mockPbn        = `% Index: 53448280378190633304670135319
-[Dealer "E"]
+	mockPbn        = `[Dealer "E"]
 [Vulnerable "EW"]
 [Deal "N:5432.K32.432.432 876.8765.765.765 JT9.JT9.JT98.T98 AKQ.AQ4.AKQ.AKQJ"]`
 )
@@ -330,26 +328,6 @@ func TestFreeRandom(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := FreeRandom(sh, tt.args.a); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("FreeRandom() = %v, want %v", got, tt.want)
-			}
-		})
-	}
-}
-
-func TestArrayToIndex(t *testing.T) {
-	type args struct {
-		content []int
-	}
-	tests := []struct {
-		name string
-		args args
-		want string
-	}{
-		{"Test1", args{mockInitDeal}, mockIndex},
-	}
-	for _, tt := range tests {
-		t.Run(tt.name, func(t *testing.T) {
-			if got := ArrayToIndex(tt.args.content); got != tt.want {
-				t.Errorf("ArrayToIndex() = %v, want %v", got, tt.want)
 			}
 		})
 	}

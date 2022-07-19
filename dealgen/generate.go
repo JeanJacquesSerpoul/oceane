@@ -2,8 +2,6 @@ package dealgen
 
 import (
 	"encoding/json"
-	"fmt"
-	"math/big"
 	"math/rand"
 	"sort"
 	"time"
@@ -104,8 +102,7 @@ func pbnDealSimple(a []int) string {
 }
 
 func pbnDeal(firstHand, dealer, vul int, a []int) string {
-	r := "% Index: " + ArrayToIndex(a) + "\n"
-	r += "[Dealer \"" + position[dealer] + "\"]\n"
+	r := "[Dealer \"" + position[dealer] + "\"]\n"
 	r += "[Vulnerable \"" + vulnerable[vul] + "\"]\n"
 	r += "[Deal \"" + position[firstHand] + ":"
 	r += pbnDealSimple(a)
@@ -128,63 +125,6 @@ func getSuitPoints(r result, a []int) result {
 			r.Suit[i][j] = append(r.Suit[i][j], s...)
 		}
 	}
-	return r
-}
-func getHandFromDist(index int) int {
-	return index / N_HANDS
-}
-func convertDistToIndexArray(content []int, index *[N_CARDS]int) {
-	var suit, height int
-	for i, v := range content {
-		suit = 3 - cardSuitInt(v)
-		height = cardValueInt(v)
-		index[suit*N_HANDS+height] = getHandFromDist(i)
-	}
-}
-
-// From java code Copyright (@)1999, Thomas Andrews
-//http://bridge.thomasoandrews.com/impossible/
-// Free for non-commercial use
-
-func fraction(val *big.Int, num, den int) *big.Int {
-	numer := int64(num)
-	denom := int64(den)
-	v := new(big.Int)
-	n := big.NewInt(numer)
-	d := big.NewInt(denom)
-	v.Mul(val, n)
-	v.Div(v, d)
-	return v
-}
-
-func pages() *big.Int {
-	v := new(big.Int)
-	v.SetString((NbDist), 10)
-
-	return v
-}
-
-func ArrayToIndex(content []int) string {
-	var r string
-	var cardsNeeded = [FOUR]int{N_HANDS, N_HANDS, N_HANDS, N_HANDS}
-	var hand, skipped, goesTo int
-	var index [N_CARDS]int
-	convertDistToIndexArray(content, &index)
-	width := pages()
-	minimum := big.NewInt(0)
-	for c := N_CARDS; c > 0; c-- {
-		hand = 0
-		skipped = 0
-		goesTo = index[c-1]
-		for hand < goesTo {
-			skipped += cardsNeeded[hand]
-			hand++
-		}
-		minimum.Add(minimum, fraction(width, skipped, c))
-		width = fraction(width, cardsNeeded[goesTo], c)
-		cardsNeeded[goesTo]--
-	}
-	r = fmt.Sprintf("%v", minimum)
 	return r
 }
 
