@@ -59,7 +59,7 @@ func TestCardValueInt(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := CardValueInt(tt.args.cardValue); got != tt.want {
+			if got := cardValueInt(tt.args.cardValue); got != tt.want {
 				t.Errorf("CardValueInt() = %v, want %v", got, tt.want)
 			}
 		})
@@ -80,7 +80,7 @@ func TestCardSuitInt(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := CardSuitInt(tt.args.cardValue); got != tt.want {
+			if got := cardSuitInt(tt.args.cardValue); got != tt.want {
 				t.Errorf("CardSuitInt() = %v, want %v", got, tt.want)
 			}
 		})
@@ -201,7 +201,7 @@ func Test_pbnDealSimple(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := PbnDealSimple(tt.args.a); got != tt.want {
+			if got := pbnDealSimple(tt.args.a); got != tt.want {
 				t.Errorf("pbnDealSimple() = %v, want %v", got, tt.want)
 			}
 		})
@@ -275,7 +275,7 @@ func TestJsonStructDeal(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := JsonStructDeal(tt.args.firstHand, tt.args.dealer, tt.args.vul, tt.args.a); got != tt.want {
+			if got := jsonStructDeal(tt.args.firstHand, tt.args.dealer, tt.args.vul, tt.args.a); got != tt.want {
 				t.Errorf("JsonStructDeal() = %v, want %v", got, tt.want)
 			}
 		})

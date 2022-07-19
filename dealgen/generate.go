@@ -33,14 +33,14 @@ func (c CardList) Shuffle(a []int) []int {
 	return v
 }
 
-func CardValueInt(cardValue int) int { return cardValue >> 2 }
+func cardValueInt(cardValue int) int { return cardValue >> 2 }
 
-func CardSuitInt(cardValue int) int { return cardValue & 3 }
+func cardSuitInt(cardValue int) int { return cardValue & 3 }
 
 func getSuitFromHand(h []int, suitValue int) []int {
 	var r []int
 	for _, value := range h {
-		if CardSuitInt(value) == suitValue {
+		if cardSuitInt(value) == suitValue {
 			r = append(r, value)
 		}
 	}
@@ -50,14 +50,14 @@ func getSuitFromHand(h []int, suitValue int) []int {
 func convertCardsToString(a []int) string {
 	r := ""
 	for _, value := range a {
-		r += faceCards[CardValueInt(value)]
+		r += faceCards[cardValueInt(value)]
 	}
 	return r
 }
 
 func sortHand(h []int) []int {
 	sort.Slice(h, func(i, j int) bool {
-		return CardValueInt(h[i]) > CardValueInt(h[j])
+		return cardValueInt(h[i]) > cardValueInt(h[j])
 	})
 	return h
 }
@@ -80,12 +80,12 @@ func handPbn(h []int) string {
 func pointsFromHand(h []int) int {
 	v := 0
 	for _, value := range h {
-		v += valueCards[CardValueInt(value)]
+		v += valueCards[cardValueInt(value)]
 	}
 	return v
 }
 
-func PbnDealSimple(a []int) string {
+func pbnDealSimple(a []int) string {
 	var h []int
 	r := ""
 	for i := 0; i <= 3; i++ {
@@ -102,7 +102,7 @@ func pbnDeal(firstHand, dealer, vul int, a []int) string {
 	r := "[Dealer \"" + position[dealer] + "\"]\n"
 	r += "[Vulnerable \"" + vulnerable[vul] + "\"]\n"
 	r += "[Deal \"" + position[firstHand] + ":"
-	r += PbnDealSimple(a)
+	r += pbnDealSimple(a)
 	r += "\"]"
 	return r
 }
@@ -127,13 +127,13 @@ func getSuitPoints(r result, a []int) result {
 
 func structDeal(firstHand, dealer, vul int, a []int) result {
 	var r result
-	r.PbnSimple = PbnDealSimple(a)
+	r.PbnSimple = pbnDealSimple(a)
 	r.Pbn = pbnDeal(firstHand, dealer, vul, a)
 	r = getHandPoints(r, a)
 	r = getSuitPoints(r, a)
 	return r
 }
-func JsonStructDeal(firstHand, dealer, vul int, a []int) string {
+func jsonStructDeal(firstHand, dealer, vul int, a []int) string {
 	result := structDeal(firstHand, dealer, vul, a)
 	r, _ := json.Marshal(result)
 	return string(r)
