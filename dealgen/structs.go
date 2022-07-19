@@ -6,6 +6,8 @@ const (
 	FOUR     = 4
 	UNDEF    = "?"
 	ERRORMSG = "ERROR!"
+	POINT    = "."
+	SPACE    = " "
 )
 
 var InitDeal = []int{

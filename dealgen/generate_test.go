@@ -434,7 +434,6 @@ func TestMaskStrToMaskInt(t *testing.T) {
 
 func TestDealMaskString(t *testing.T) {
 	type args struct {
-		deal []int
 		mask string
 		suit int
 		hand int
@@ -444,12 +443,12 @@ func TestDealMaskString(t *testing.T) {
 		args args
 		want string
 	}{
-		{"Test1", args{mockInitDeal, "AKQJT98765432", 1, 2}, "Q86..KJT83.AKQJ9 KJ975..Q965.7532 .AKQJT98765432.. AT432..A742.T864"},
+		{"Test1", args{"AKQJT98765432", 1, 2}, "KT..AQJ98753.AKQ A872..KT64.T8753 .AKQJT98765432.. QJ96543..2.J9642"},
 	}
 	var sh FakeRandom
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := DealMaskString(sh, tt.args.deal, tt.args.mask, tt.args.suit, tt.args.hand); got != tt.want {
+			if got := DealMaskString(sh, tt.args.mask, tt.args.suit, tt.args.hand); got != tt.want {
 				t.Errorf("DealMaskString() = %v, want %v", got, tt.want)
 			}
 		})

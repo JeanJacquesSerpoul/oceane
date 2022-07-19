@@ -72,9 +72,9 @@ func dealMaskSuit(maskSuit []int, suit int) []int {
 	}
 	return r
 }
-func DealMaskString(sh ShuffleInterface, deal []int, mask string, suit, hand int) string {
+func DealMaskString(sh ShuffleInterface, mask string, suit, hand int) string {
 	maskSuit := maskStrToMaskInt(mask)
-	r := dealMask(sh, deal, maskSuit, suit, hand)
+	r := dealMask(sh, InitDeal, maskSuit, suit, hand)
 	return pbnDealSimple(r)
 }
 
@@ -195,7 +195,7 @@ func handPbn(h []int) string {
 		v = sortHand(v)
 		r += convertCardsToString(v)
 		if i < 3 {
-			r += "."
+			r += POINT
 		}
 	}
 	return r
@@ -216,7 +216,7 @@ func pbnDealSimple(a []int) string {
 		h = a[i*N_HANDS : i*N_HANDS+N_HANDS]
 		r += handPbn(h)
 		if i < 3 {
-			r += " "
+			r += SPACE
 		}
 	}
 	return r
