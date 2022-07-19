@@ -12,7 +12,7 @@ func init() {
 }
 
 // Shuffle Implement Fisher and Yates shuffle method
-func FYShuffle(n int) []int {
+func (rd *Random) fYShuffle(n int) []int {
 	var random, temp int
 	t := make([]int, n)
 	for i := range t {
@@ -25,12 +25,6 @@ func FYShuffle(n int) []int {
 		t[random] = temp
 	}
 	return t
-}
-
-func (c CardList) Shuffle(a []int) []int {
-	v := make([]int, len(a))
-	v = FYShuffle(len(a))
-	return v
 }
 
 func cardValueInt(cardValue int) int { return cardValue >> 2 }

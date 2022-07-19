@@ -45,6 +45,35 @@ var (
 [Deal "N:5432.K32.432.432 876.8765.765.765 JT9.JT9.JT98.T98 AKQ.AQ4.AKQ.AKQJ"]`
 )
 
+type fakeRandom struct {
+}
+
+func (test *fakeRandom) fYShuffle(n int) []int {
+	var random, temp int
+	t := make([]int, n)
+	for i := 0; i < n; i++ {
+		t[i] = i
+	}
+	for i := len(t) - 1; i >= 0; i-- {
+		temp = t[i]
+		random = i
+		t[i] = t[random]
+		t[random] = temp
+	}
+	return t
+}
+
+func Test_fYshuffle(t *testing.T) {
+	t.Parallel()
+	sh := new(Random)
+	t1 := sh.fYShuffle(N_CARDS)
+	t2 := sh.fYShuffle(N_CARDS)
+	if reflect.DeepEqual(t1, t2) {
+		t.Errorf("fYshuffle is not working")
+	}
+
+}
+
 func TestCardValueInt(t *testing.T) {
 	type args struct {
 		cardValue int

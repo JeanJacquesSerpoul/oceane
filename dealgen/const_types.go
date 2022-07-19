@@ -19,5 +19,8 @@ var (
 	vulnerable = []string{"ALL", "NS", "EW", "NONE"}
 )
 
-// NbDist Number of different distribution CNP(52,13)*CNP(39,13)*CNP(26,13)
-const NbDist = "53644737765488792839237440000"
+type Random struct {
+}
+type ShuffleInterface interface {
+	fYShuffle(int) []int
+}
