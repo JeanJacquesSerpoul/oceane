@@ -36,6 +36,7 @@ func FreeRandom(sh ShuffleInterface, a []int) []int {
 	}
 	return t
 }
+
 func intInSlice(a int, list []int) int {
 	for _, vlist := range list {
 		if vlist == a {
@@ -44,6 +45,7 @@ func intInSlice(a int, list []int) int {
 	}
 	return -1
 }
+
 func delta(slice []int, ToRemove []int) []int {
 	var diff []int
 
@@ -57,9 +59,11 @@ func delta(slice []int, ToRemove []int) []int {
 	}
 	return diff
 }
+
 func cardSuitToValue(cardValue, suit int) int {
 	return (cardValue << 2) + suit
 }
+
 func DealMaskSuit(maskSuit []int, suit int) []int {
 	var r []int
 	for _, value := range maskSuit {
@@ -68,6 +72,7 @@ func DealMaskSuit(maskSuit []int, suit int) []int {
 	}
 	return r
 }
+
 func DealMask(sh ShuffleInterface, deal, maskSuit []int, suit, hand int) []int {
 	var r, d, mask []int
 	dm := DealMaskSuit(maskSuit, suit)
@@ -132,6 +137,7 @@ func MaskStrToMaskInt(v string) []int {
 	}
 	return a
 }
+
 func getFaceCard(v int) string {
 	if v <= 7 {
 		return strconv.Itoa(v + 2)
@@ -154,6 +160,7 @@ func getFaceCard(v int) string {
 	}
 	return ERRORMSG
 }
+
 func convertCardsToString(a []int) string {
 	r := ""
 	for _, value := range a {
@@ -245,6 +252,7 @@ func structDeal(firstHand, dealer, vul int, a []int) result {
 	r = getSuitPoints(r, a)
 	return r
 }
+
 func jsonStructDeal(firstHand, dealer, vul int, a []int) string {
 	result := structDeal(firstHand, dealer, vul, a)
 	r, _ := json.Marshal(result)

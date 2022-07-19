@@ -25,6 +25,7 @@ var mockInitDeal = []int{
 	17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
 	36, 37, 38, 39, 40, 41, 42, 43, 44, 9, 46, 47, 48, 49, 50, 51,
 }
+
 var mockRandom = []int{
 	44, 39, 13, 33, 43, 37, 47, 51, 28, 0, 14, 46, 48, 35, 21, 27,
 	30, 40, 42, 3, 22, 31, 17, 36, 19, 5, 25, 24, 10, 20, 26,
@@ -36,12 +37,15 @@ var mockResultRandom = []int{
 	16, 41, 14, 35, 24, 18, 26, 37, 38, 34, 23, 4, 49, 22, 17, 50, 10, 46, 25,
 	15, 5, 29, 12, 21, 51, 20, 8, 45, 31, 1, 6, 0, 32, 33, 7,
 }
+
 var mockHand = []int{
 	17, 18, 19, 20, 21, 22, 45, 24, 25, 26, 50, 28, 29,
 }
+
 var mockHandWithUndef = []int{
 	17, 18, 19, 20, -1, 22, 45, 24, 25, 26, 50, 28, 29,
 }
+
 var mockSuitHand = []int{
 	17, 21, 45, 25, 29,
 }
@@ -49,6 +53,7 @@ var mockSuitHand = []int{
 var mockSortHand = []int{
 	50, 45, 28, 29, 24, 25, 26, 21, 22, 20, 19, 18, 17,
 }
+
 var (
 	mockStringHand = "987.K9876.A876.6"
 	mockPbnSimple  = "5432.K32.432.432 876.8765.765.765 JT9.JT9.JT98.T98 AKQ.AQ4.AKQ.AKQJ"
@@ -62,21 +67,23 @@ var mockDealMask = []int{
 	17, 18, 19, 20, 21, -1, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
 	36, 37, 38, 39, -1, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51,
 }
+
 var mockResultDealMask = []int{
 	0, 1, 2, 3, 11, 40, 22, 7, 8, 9, 10, 5, 12, 13, 14,
 	15, 16, 17, 18, 19, 20, 21, 4, 23, 24, 25, 26, 27, 28, 29,
 	30, 31, 32, 33, 34, 35, 36, 37, 38, 39, 6, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51,
 }
 
-var mockMaskSuite = []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
-var mockResultMaskSuite = []int{
-	6, 46, 26, 24, 34, 16, 31, 39, 51, 47, 38, 43, 40, 12, 7,
-	42, 30, 20, 44, 18, 36, 3, 23, 28, 14, 15, 1, 5, 9, 13, 17,
-	21, 25, 29, 33, 37, 41, 45, 49, 35, 2, 8, 50, 0, 22, 27, 11, 48, 4, 19, 10, 32,
-}
+var (
+	mockMaskSuite       = []int{0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12}
+	mockResultMaskSuite = []int{
+		6, 46, 26, 24, 34, 16, 31, 39, 51, 47, 38, 43, 40, 12, 7,
+		42, 30, 20, 44, 18, 36, 3, 23, 28, 14, 15, 1, 5, 9, 13, 17,
+		21, 25, 29, 33, 37, 41, 45, 49, 35, 2, 8, 50, 0, 22, 27, 11, 48, 4, 19, 10, 32,
+	}
+)
 
-type FakeRandom struct {
-}
+type FakeRandom struct{}
 
 func extractRandom(a []int, n int) []int {
 	var r []int
@@ -87,6 +94,7 @@ func extractRandom(a []int, n int) []int {
 	}
 	return r
 }
+
 func (test FakeRandom) fYShuffle(n int) []int {
 	return extractRandom(mockRandom, n)
 }
@@ -99,7 +107,6 @@ func Test_fYshuffle(t *testing.T) {
 	if reflect.DeepEqual(t1, t2) {
 		t.Errorf("fYshuffle is not working")
 	}
-
 }
 
 func TestCardValueInt(t *testing.T) {
