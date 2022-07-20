@@ -252,8 +252,7 @@ func getHandPoints(r result, a []int) result {
 func getSuitPoints(r result, a []int) result {
 	for i := 0; i <= 3; i++ {
 		for j := 0; j <= 3; j++ {
-			s := make([]int, len(getSuitFromHand(a[i*N_HANDS:i*N_HANDS+N_HANDS], j)))
-			s = getSuitFromHand(sortHand(a[i*N_HANDS:i*N_HANDS+N_HANDS]), j)
+			s := getSuitFromHand(sortHand(a[i*N_HANDS:i*N_HANDS+N_HANDS]), j)
 			r.Suit[i][j] = append(r.Suit[i][j], s...)
 		}
 	}
