@@ -90,6 +90,9 @@ var (
 	}
 )
 
+var mockMaskToArray = [FOUR][FOUR]string{{"KQ", "954", "Q92", "A"}, {"764", "76", "A6", "Q72"},
+	{"", "", "", ""}, {"AT8", "KT3", "KJ54", ""}}
+
 type FakeRandom struct{}
 
 func (test FakeRandom) fYShuffle(n int) []int {
@@ -461,6 +464,26 @@ func TestDealMaskString(t *testing.T) {
 			}
 			if got != tt.want {
 				t.Errorf("DealMaskString() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_maskToArray(t *testing.T) {
+	type args struct {
+		pbn string
+	}
+	tests := []struct {
+		name string
+		args args
+		want [FOUR][FOUR]string
+	}{
+		{"Test1", args{"KQ.954.Q92.A 764.76.A6.Q72 - AT8.KT3.KJ54."}, mockMaskToArray},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := maskToArray(tt.args.pbn); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("maskToArray() = %v, want %v", got, tt.want)
 			}
 		})
 	}

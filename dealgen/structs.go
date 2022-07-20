@@ -8,6 +8,8 @@ const (
 	ERRORMSG   = "ERROR!"
 	POINT      = "."
 	SPACE      = " "
+	POINTS3    = "..."
+	MINUS      = "-"
 	ERROR_SUIT = "Suit should be beetween 0 (Spade) and 3 (Club)"
 	ERROR_HAND = "Hand should be beetween 0 (North) and 3 (West)"
 )
@@ -26,10 +28,12 @@ var (
 	vulnerable = []string{"ALL", "NS", "EW", "NONE"}
 )
 
-type Random struct{}
-type ShuffleInterface interface {
-	fYShuffle(int) []int
-}
+type (
+	Random           struct{}
+	ShuffleInterface interface {
+		fYShuffle(int) []int
+	}
+)
 
 type Shuffler interface {
 	Shuffle([]int) []int

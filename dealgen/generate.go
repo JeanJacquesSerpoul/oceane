@@ -6,6 +6,7 @@ import (
 	"math/rand"
 	"sort"
 	"strconv"
+	"strings"
 	"time"
 )
 
@@ -72,6 +73,21 @@ func dealMaskSuit(maskSuit []int, suit int) []int {
 		r = append(r, v)
 	}
 	return r
+}
+
+func maskToArray(pbn string) [FOUR][FOUR]string {
+	var a [FOUR][FOUR]string
+	var hand []string
+	hand = strings.Split(pbn, SPACE)
+	for i, v := range hand {
+		if v != MINUS {
+			suit := strings.Split(v, POINT)
+			for j, w := range suit {
+				a[i][j] = w
+			}
+		}
+	}
+	return a
 }
 
 func DealMaskString(sh ShuffleInterface, deal []int, mask string, hand, suit int) (string, error) {
