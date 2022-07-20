@@ -64,7 +64,7 @@ func getInitDeal() []int {
 	return initDeal
 }
 
-func MaskToArray(pbn string) ([]int, []int) {
+func maskToArray(pbn string) ([]int, []int) {
 	s := maskConvertToArray(pbn)
 	var r, w, d []int
 	for i := 0; i < 4; i++ {
@@ -101,7 +101,7 @@ func maskConvertToArray(pbn string) [4][4]string {
 }
 
 func DealMaskString(sh ShuffleInterface, mask string) string {
-	deal, delta := MaskToArray(mask)
+	deal, delta := maskToArray(mask)
 	s := freeRandom(sh, delta)
 	k := 0
 	for i, value := range deal {
