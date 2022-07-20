@@ -87,8 +87,7 @@ func maskToArray(pbn string) ([]int, []int) {
 
 func maskConvertToArray(pbn string) [4][4]string {
 	var a [4][4]string
-	var hand []string
-	hand = strings.Split(pbn, SPACE)
+	hand := strings.Split(pbn, SPACE)
 	for i, v := range hand {
 		if v != MINUS {
 			suit := strings.Split(v, POINT)
