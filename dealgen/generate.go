@@ -73,6 +73,7 @@ func dealMaskSuit(maskSuit []int, suit int) []int {
 	}
 	return r
 }
+
 func DealMaskString(sh ShuffleInterface, deal []int, mask string, suit, hand int) (string, error) {
 	if !(suit >= 0 && suit <= 3) {
 		err := fmt.Errorf(ERROR_SUIT)
