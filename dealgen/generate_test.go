@@ -435,6 +435,7 @@ func TestMaskStrToMaskInt(t *testing.T) {
 func TestDealMaskString(t *testing.T) {
 	type args struct {
 		mask string
+		deal []int
 		suit int
 		hand int
 	}
@@ -444,14 +445,14 @@ func TestDealMaskString(t *testing.T) {
 		want    string
 		wantErr bool
 	}{
-		{"Test1", args{"AKQJT98765432", 1, 2}, "KT..AQJ98753.AKQ A872..KT64.T8753 .AKQJT98765432.. QJ96543..2.J9642", false},
-		{"Test1", args{"AKQJT98765432", 8, 2}, "", true},
-		{"Test1", args{"AKQJT98765432", 1, 8}, "", true},
+		{"Test1", args{"AKQJT98765432", mockInitDeal, 1, 2}, "KT..AQJ98753.AKQ A872..KT64.T8753 .AKQJT98765432.. QJ96543..2.J9642", false},
+		{"Test1", args{"AKQJT98765432", mockInitDeal, 8, 2}, "", true},
+		{"Test1", args{"AKQJT98765432", mockInitDeal, 1, 8}, "", true},
 	}
 	var sh FakeRandom
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got, err := DealMaskString(sh, tt.args.mask, tt.args.suit, tt.args.hand)
+			got, err := DealMaskString(sh, tt.args.deal, tt.args.mask, tt.args.suit, tt.args.hand)
 			if (err != nil) != tt.wantErr {
 				t.Errorf("DealMaskString() error = %v, wantErr %v", err, tt.wantErr)
 				return

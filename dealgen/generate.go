@@ -73,7 +73,7 @@ func dealMaskSuit(maskSuit []int, suit int) []int {
 	}
 	return r
 }
-func DealMaskString(sh ShuffleInterface, mask string, suit, hand int) (string, error) {
+func DealMaskString(sh ShuffleInterface, deal []int, mask string, suit, hand int) (string, error) {
 	if !(suit >= 0 && suit <= 3) {
 		err := fmt.Errorf(ERROR_SUIT)
 		return "", err
@@ -84,7 +84,7 @@ func DealMaskString(sh ShuffleInterface, mask string, suit, hand int) (string, e
 	}
 
 	maskSuit := maskStrToMaskInt(mask)
-	r := dealMask(sh, InitDeal, maskSuit, suit, hand)
+	r := dealMask(sh, deal, maskSuit, suit, hand)
 	return pbnDealSimple(r), nil
 }
 

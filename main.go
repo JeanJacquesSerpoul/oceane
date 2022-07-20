@@ -7,6 +7,6 @@ import (
 
 func main() {
 	var sh dealgen.Random
-	r, err := dealgen.DealMaskString(sh, "AKQJT98765432", 0, 0)
+	r, err := dealgen.DealMaskString(sh, dealgen.InitDeal, "AKQJT98765432", 1, 2)
 	fmt.Println(r, err)
 }
