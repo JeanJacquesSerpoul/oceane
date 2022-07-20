@@ -1,8 +1,6 @@
 package dealgen
 
 import (
-	"encoding/json"
-	"fmt"
 	"math/rand"
 	"sort"
 	"strconv"
@@ -62,21 +60,33 @@ func delta(slice []int, ToRemove []int) []int {
 	return diff
 }
 
-func cardSuitToValue(cardValue, suit int) int {
-	return (cardValue << 2) + suit
+func getInitDeal() []int {
+	return initDeal
 }
 
-func dealMaskSuit(maskSuit []int, suit int) []int {
-	var r []int
-	for _, value := range maskSuit {
-		v := cardSuitToValue(value, suit)
-		r = append(r, v)
+func MaskToArray(pbn string) ([]int, []int) {
+	s := maskConvertToArray(pbn)
+	var r, w, d []int
+	for i := 0; i < 4; i++ {
+		r = nil
+		for j := 0; j < 4; j++ {
+			b := s[i][j]
+			if b != "" {
+				r = append(r, maskStrToMaskInt(b, j)...)
+			}
+		}
+		l := len(r)
+		for k := 0; k < N_HANDS-l; k++ {
+			r = append(r, -1)
+		}
+		w = append(w, r...)
 	}
-	return r
+	d = delta(getInitDeal(), w)
+	return w, d
 }
 
-func maskToArray(pbn string) [FOUR][FOUR]string {
-	var a [FOUR][FOUR]string
+func maskConvertToArray(pbn string) [4][4]string {
+	var a [4][4]string
 	var hand []string
 	hand = strings.Split(pbn, SPACE)
 	for i, v := range hand {
@@ -90,42 +100,17 @@ func maskToArray(pbn string) [FOUR][FOUR]string {
 	return a
 }
 
-func DealMaskString(sh ShuffleInterface, deal []int, mask string, hand, suit int) (string, error) {
-	if !(suit >= 0 && suit <= 3) {
-		err := fmt.Errorf(ERROR_SUIT)
-		return "", err
-	}
-	if !(hand >= 0 && hand <= 3) {
-		err := fmt.Errorf(ERROR_HAND)
-		return "", err
-	}
-
-	maskSuit := maskStrToMaskInt(mask)
-	r := dealMask(sh, deal, maskSuit, hand, suit)
-	return pbnDealSimple(r), nil
-}
-
-func dealMask(sh ShuffleInterface, deal, maskSuit []int, hand, suit int) []int {
-	var r, d, mask []int
-	dm := dealMaskSuit(maskSuit, suit)
-	for range deal {
-		mask = append(mask, -1)
-	}
-	for i, value := range dm {
-		mask[hand*N_HANDS+i] = value
-	}
-	d = delta(deal, mask)
-	s := freeRandom(sh, d)
+func DealMaskString(sh ShuffleInterface, mask string) string {
+	deal, delta := MaskToArray(mask)
+	s := freeRandom(sh, delta)
 	k := 0
-	for i, value := range mask {
-		if value >= 0 && (i >= hand*N_HANDS && i < hand*N_HANDS+N_HANDS) {
-			r = append(r, value)
-		} else {
-			r = append(r, s[k])
+	for i, value := range deal {
+		if value == -1 {
+			deal[i] = s[k]
 			k++
 		}
 	}
-	return r
+	return pbnDealSimple(deal)
 }
 
 func cardValueInt(cardValue int) int { return cardValue >> 2 }
@@ -142,29 +127,29 @@ func getSuitFromHand(h []int, suitValue int) []int {
 	return r
 }
 
-func maskStrToMaskInt(v string) []int {
+func maskStrToMaskInt(v string, suit int) []int {
 	var a []int
 	for i := 0; i < len(v); i++ {
 		x := string(v[i])
 		if (x == "2") || (x == "3") || (x == "4") || (x == "5") || (x == "6") || (x == "7") || (x == "8") || (x == "9") {
 			t, _ := strconv.Atoi(x)
 			t -= 2
-			a = append(a, t)
+			a = append(a, (t<<2)+suit)
 		}
 		if x == "T" {
-			a = append(a, 8)
+			a = append(a, (8<<2)+suit)
 		}
 		if x == "J" {
-			a = append(a, 9)
+			a = append(a, (9<<2)+suit)
 		}
 		if x == "Q" {
-			a = append(a, 10)
+			a = append(a, (10<<2)+suit)
 		}
 		if x == "K" {
-			a = append(a, 11)
+			a = append(a, (11<<2)+suit)
 		}
 		if x == "A" {
-			a = append(a, 12)
+			a = append(a, (12<<2)+suit)
 		}
 	}
 	return a
@@ -247,45 +232,4 @@ func pbnDealSimple(a []int) string {
 		}
 	}
 	return r
-}
-
-func pbnDeal(firstHand, dealer, vul int, a []int) string {
-	r := "[Dealer \"" + position[dealer] + "\"]\n"
-	r += "[Vulnerable \"" + vulnerable[vul] + "\"]\n"
-	r += "[Deal \"" + position[firstHand] + ":"
-	r += pbnDealSimple(a)
-	r += "\"]"
-	return r
-}
-
-func getHandPoints(r result, a []int) result {
-	for i := 0; i <= 3; i++ {
-		r.HandPoints[i] = pointsFromHand(a[i*N_HANDS : i*N_HANDS+N_HANDS])
-	}
-	return r
-}
-
-func getSuitPoints(r result, a []int) result {
-	for i := 0; i <= 3; i++ {
-		for j := 0; j <= 3; j++ {
-			s := getSuitFromHand(sortHand(a[i*N_HANDS:i*N_HANDS+N_HANDS]), j)
-			r.Suit[i][j] = append(r.Suit[i][j], s...)
-		}
-	}
-	return r
-}
-
-func structDeal(firstHand, dealer, vul int, a []int) result {
-	var r result
-	r.PbnSimple = pbnDealSimple(a)
-	r.Pbn = pbnDeal(firstHand, dealer, vul, a)
-	r = getHandPoints(r, a)
-	r = getSuitPoints(r, a)
-	return r
-}
-
-func jsonStructDeal(firstHand, dealer, vul int, a []int) string {
-	result := structDeal(firstHand, dealer, vul, a)
-	r, _ := json.Marshal(result)
-	return string(r)
 }

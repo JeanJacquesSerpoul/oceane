@@ -1,20 +1,17 @@
 package dealgen
 
 const (
-	N_CARDS    = 52
-	N_HANDS    = 13
-	FOUR       = 4
-	UNDEF      = "?"
-	ERRORMSG   = "ERROR!"
-	POINT      = "."
-	SPACE      = " "
-	POINTS3    = "..."
-	MINUS      = "-"
-	ERROR_SUIT = "Suit should be beetween 0 (Spade) and 3 (Club)"
-	ERROR_HAND = "Hand should be beetween 0 (North) and 3 (West)"
+	N_CARDS  = 52
+	N_HANDS  = 13
+	UNDEF    = "?"
+	ERRORMSG = "ERROR!"
+	POINT    = "."
+	SPACE    = " "
+	POINTS3  = "..."
+	MINUS    = "-"
 )
 
-var InitDeal = []int{
+var initDeal = []int{
 	0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
 	17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
 	36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51,
@@ -37,15 +34,4 @@ type (
 
 type Shuffler interface {
 	Shuffle([]int) []int
-}
-
-type CardList struct {
-	CardList []int
-}
-
-type result struct {
-	PbnSimple  string            `json:"pbnsimple"`
-	Pbn        string            `json:"pbn"`
-	HandPoints [FOUR]int         `json:"handpoints"`
-	Suit       [FOUR][FOUR][]int `json:"suit"`
 }
