@@ -382,7 +382,7 @@ func TestDealMask(t *testing.T) {
 		args args
 		want []int
 	}{
-		{"Test1", args{mockDealB, mockMaskSuite, 1, 2}, mockResultMaskSuite},
+		{"Test1", args{mockDealB, mockMaskSuite, 2, 1}, mockResultMaskSuite},
 	}
 	var sh FakeRandom
 	for _, tt := range tests {
@@ -447,9 +447,9 @@ func TestDealMaskString(t *testing.T) {
 		want    string
 		wantErr bool
 	}{
-		{"Test1", args{"AKQJT98765432", mockDealB, 1, 2}, "AKQJ..AKQJ.AKQJT T987..T9876.9876 .AKQJT98765432.. 65432..5432.5432", false},
-		{"Test1", args{"AKQJT98765432", mockDealB, 8, 2}, "", true},
-		{"Test1", args{"AKQJT98765432", mockDealB, 1, 8}, "", true},
+		{"Test1", args{"AKQJT98765432", mockDealB, 2, 1}, "AKQJ..AKQJ.AKQJT T987..T9876.9876 .AKQJT98765432.. 65432..5432.5432", false},
+		{"Test1", args{"AKQJT98765432", mockDealB, 2, 8}, "", true},
+		{"Test1", args{"AKQJT98765432", mockDealB, 8, 1}, "", true},
 	}
 	var sh FakeRandom
 	for _, tt := range tests {
