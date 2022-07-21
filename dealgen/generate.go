@@ -130,9 +130,9 @@ func getInitDeal() []int {
 func MaskToArray(pbn string) ([]int, []int) {
 	s := maskConvertToArray(pbn)
 	var r, w, d []int
-	for i := 0; i < 4; i++ {
+	for i := 0; i < N_OF_HANDS; i++ {
 		r = nil
-		for j := 0; j < 4; j++ {
+		for j := 0; j < N_OF_SUITS; j++ {
 			b := s[i][j]
 			if b != "" {
 				r = append(r, maskStrToMaskInt(b, j)...)
@@ -149,18 +149,18 @@ func MaskToArray(pbn string) ([]int, []int) {
 }
 
 func maskConvertToArray(pbn string) [][]string {
-	a := make([][]string, 4)
+	a := make([][]string, N_OF_HANDS)
 	for i := range a {
 		a[i] = make([]string, 4)
 	}
 	hand := strings.Split(pbn, SPACE)
-	if len(hand) != 4 {
+	if len(hand) != N_OF_HANDS {
 		return a
 	}
 	for i, v := range hand {
 		if v != MINUS {
 			suit := strings.Split(v, POINT)
-			if len(suit) != 4 {
+			if len(suit) != N_OF_SUITS {
 				return a
 			}
 			copy(a[i], suit)
@@ -270,12 +270,12 @@ func sortHand(h []int) []int {
 func handPbn(h []int) string {
 	r := ""
 
-	for i := 0; i <= 3; i++ {
+	for i := 0; i < N_OF_SUITS; i++ {
 		var v []int
 		v = append(v, getSuitFromHand(h, i)...)
 		v = sortHand(v)
 		r += convertCardsToString(v)
-		if i < 3 {
+		if i < N_OF_SUITS-1 {
 			r += POINT
 		}
 	}
@@ -298,7 +298,7 @@ func pointsFromHand(h []int) int {
 func pbnDealSimple(a []int) string {
 	var h []int
 	r := ""
-	for i := 0; i <= 3; i++ {
+	for i := 0; i < N_OF_HANDS; i++ {
 		h = a[i*N_HANDS : i*N_HANDS+N_HANDS]
 		r += handPbn(h)
 		if i < 3 {
