@@ -5,6 +5,7 @@ const (
 	N_HANDS    = 13
 	N_OF_HANDS = 4
 	N_OF_SUITS = 4
+	NONE       = -1
 	POINT      = "."
 	SPACE      = " "
 	POINTS3    = "..."

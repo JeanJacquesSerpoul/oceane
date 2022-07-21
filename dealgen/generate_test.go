@@ -62,6 +62,7 @@ func mockNullMaskSuitToArray() [][]int {
 	r := [][]int{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}
 	return r
 }
+
 func mockMaskConvertToArray() [][]string {
 	a := make([][]string, 4)
 	for i := range a {

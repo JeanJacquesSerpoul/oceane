@@ -71,6 +71,14 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
+func getInitDeal() []int {
+	return []int{
+		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+		17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
+		36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51,
+	}
+}
+
 func nullMaskSuitToArray() [][]int {
 	r := [][]int{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}
 	return r
@@ -107,7 +115,7 @@ func intInSlice(a int, list []int) int {
 			return a
 		}
 	}
-	return -1
+	return NONE
 }
 
 func delta(slice []int, ToRemove []int) []int {
@@ -124,13 +132,6 @@ func delta(slice []int, ToRemove []int) []int {
 	return diff
 }
 
-func getInitDeal() []int {
-	return []int{
-		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
-		17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
-		36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51,
-	}
-}
 func maskSuitToArray(s string) [][]int {
 	a := make([][]int, N_OF_HANDS)
 	for i := range a {
@@ -180,7 +181,7 @@ func maskToArray(pbn string) ([]int, []int) {
 		}
 		l := len(r)
 		for k := 0; k < N_HANDS-l; k++ {
-			r = append(r, -1)
+			r = append(r, NONE)
 		}
 		w = append(w, r...)
 	}
@@ -214,7 +215,7 @@ func DealMaskString(sh ShuffleInterface, mask string) string {
 	s := freeRandom(sh, delta)
 	k := 0
 	for i, value := range deal {
-		if value == -1 {
+		if value == NONE {
 			deal[i] = s[k]
 			k++
 		}
@@ -290,7 +291,7 @@ func getFaceCard(v int) string {
 func convertCardsToString(a []int) string {
 	r := ""
 	for _, value := range a {
-		if value == -1 {
+		if value == NONE {
 			r += ""
 		} else {
 			v := cardValueInt(value)
