@@ -243,14 +243,14 @@ func getFaceCard(v int) string {
 			return "A"
 		}
 	}
-	return ERRORMSG
+	return ""
 }
 
 func convertCardsToString(a []int) string {
 	r := ""
 	for _, value := range a {
 		if value == -1 {
-			r += UNDEF
+			r += ""
 		} else {
 			v := cardValueInt(value)
 			r += getFaceCard(v)

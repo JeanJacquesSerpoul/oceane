@@ -131,7 +131,7 @@ func Test_convertCardsToString(t *testing.T) {
 		want string
 	}{
 		{"Test1", args{mockHand()}, "666777K888A99"},
-		{"Test2", args{mockHandWithUndef()}, "6667?7K888A99"},
+		{"Test2", args{mockHandWithUndef()}, "66677K888A99"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -273,7 +273,7 @@ func Test_getFaceCard(t *testing.T) {
 		args args
 		want string
 	}{
-		{"Test1", args{100}, ERRORMSG},
+		{"Test1", args{100}, ""},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
