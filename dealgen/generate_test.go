@@ -5,6 +5,8 @@ import (
 	"testing"
 )
 
+type fakeRandom struct{}
+
 func mockDeal() []int {
 	return []int{
 		0, 1, 2, 3, 4, 5, 6, 7, 8, 45, 10, 11, 12, 13, 14, 15, 16,
@@ -70,10 +72,11 @@ func mockMaskConvertToArray() [][]string {
 	}
 	return a
 }
+func mockSuit() []int {
+	return []int{48, 44, 40, 36, 32, 28, 24, 20, 16, 12, 8, 4, 0}
+}
 
-type FakeRandom struct{}
-
-func (test FakeRandom) fYShuffle(n int) []int {
+func (test fakeRandom) fYShuffle(n int) []int {
 	var r []int
 	for i := 0; i < n; i++ {
 		r = append(r, n-i-1)
@@ -266,7 +269,7 @@ func TestFreeRandom(t *testing.T) {
 	}{
 		{"Test1", args{mockDeal()}, mockResultRandom()},
 	}
-	var sh FakeRandom
+	var sh fakeRandom
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := freeRandom(sh, tt.args.a); !reflect.DeepEqual(got, tt.want) {
@@ -311,7 +314,7 @@ func TestDealMaskString(t *testing.T) {
 			"AK4.AKJ.A4.KT987 J62.Q6.KQJT8.A53 QT98.874.97532.4 753.T9532.6.QJ62",
 		},
 	}
-	var sh FakeRandom
+	var sh fakeRandom
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := DealMaskString(sh, tt.args.mask); got != tt.want {
@@ -353,12 +356,34 @@ func Test_maskSuitToArray(t *testing.T) {
 	}{
 		{"Test1", args{"5.4.4.1 8.7.6.2 1.3.6.0 1.2.3.1"}, mockMaskSuitToArray()},
 		{"Test2", args{"5.4.4.18.7.6.2 1.3.6.0 1.2.3.1"}, mockNullMaskSuitToArray()},
-		{"Test2", args{"5.4.4.1 8.76.2 1.3.6.0 1.2.3.1"}, mockNullMaskSuitToArray()},
+		{"Test3", args{"5.4.4.1 8.76.2 1.3.6.0 1.2.3.1"}, mockNullMaskSuitToArray()},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := maskSuitToArray(tt.args.s); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("maskSuitToArray() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_randomSuitArray(t *testing.T) {
+	type args struct {
+		s int
+	}
+	tests := []struct {
+		name string
+		args args
+		want []int
+	}{
+		{"Test1", args{0}, mockSuit()},
+		{"Test2", args{100}, mockSuit()},
+	}
+	var sh fakeRandom
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := randomSuitArray(sh, tt.args.s); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("randomSuitArray() = %v, want %v", got, tt.want)
 			}
 		})
 	}

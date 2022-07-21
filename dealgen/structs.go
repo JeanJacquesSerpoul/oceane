@@ -10,6 +10,11 @@ const (
 	SPACE      = " "
 	POINTS3    = "..."
 	MINUS      = "-"
+	TEN        = "T"
+	JOKER      = "J"
+	QUEEN      = "Q"
+	KING       = "K"
+	ACE        = "A"
 )
 
 type (

@@ -78,9 +78,25 @@ func getInitDeal() []int {
 		36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51,
 	}
 }
-
+func getSuit() [][]int {
+	r := [][]int{{0, 4, 8, 12, 16, 20, 24, 28, 32, 36, 40, 44, 48},
+		{0 + 1, 4 + 1, 8 + 1, 12 + 1, 16 + 1, 20 + 1, 24 + 1, 28 + 1, 32 + 1, 36 + 1, 40 + 1, 44 + 1, 48 + 1},
+		{0 + 2, 4 + 2, 8 + 2, 12 + 2, 16 + 2, 20 + 2, 24 + 2, 28 + 2, 32 + 2, 36 + 2, 40 + 2, 44 + 2, 48 + 2},
+		{0 + 3, 4 + 3, 8 + 3, 12 + 3, 16 + 3, 20 + 3, 24 + 3, 28 + 3, 32 + 3, 36 + 3, 40 + 3, 44 + 3, 48 + 3},
+	}
+	return r
+}
 func nullMaskSuitToArray() [][]int {
 	r := [][]int{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}
+	return r
+}
+func randomSuitArray(sh ShuffleInterface, s int) []int {
+	a := getSuit()
+	if s < 0 || s > N_OF_HANDS {
+		s = 0
+	}
+	r := freeRandom(sh, a[s])
+
 	return r
 }
 
@@ -249,16 +265,16 @@ func maskStrToMaskInt(v string, suit int) []int {
 		if x == "T" {
 			a = append(a, (8<<2)+suit)
 		}
-		if x == "J" {
+		if x == JOKER {
 			a = append(a, (9<<2)+suit)
 		}
-		if x == "Q" {
+		if x == QUEEN {
 			a = append(a, (10<<2)+suit)
 		}
-		if x == "K" {
+		if x == KING {
 			a = append(a, (11<<2)+suit)
 		}
-		if x == "A" {
+		if x == ACE {
 			a = append(a, (12<<2)+suit)
 		}
 	}
@@ -270,19 +286,19 @@ func getFaceCard(v int) string {
 		return strconv.Itoa(v + 2)
 	} else {
 		if v == 8 {
-			return "T"
+			return TEN
 		}
 		if v == 9 {
-			return "J"
+			return JOKER
 		}
 		if v == 10 {
-			return "Q"
+			return QUEEN
 		}
 		if v == 11 {
-			return "K"
+			return KING
 		}
 		if v == 12 {
-			return "A"
+			return ACE
 		}
 	}
 	return ""
