@@ -217,9 +217,10 @@ func handPbn(h []int) string {
 }
 
 func getValueCards(i int) int {
-	var valueCards = []int{0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4}
+	valueCards := []int{0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 2, 3, 4}
 	return valueCards[i]
 }
+
 func pointsFromHand(h []int) int {
 	v := 0
 	for _, value := range h {
