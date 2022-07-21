@@ -53,10 +53,12 @@ func mockPbnSimple() string {
 	return "5432.K32.432.432 876.8765.765.765 JT9.JT9.JT98.T98 AKQ.AQ4.AKQ.AKQJ"
 }
 
-func mockMaskConvertToArray() [4][4]string {
-	return [4][4]string{
-		{"", "", "", ""}, {"", "", "", ""}, {"", "", "", ""}, {"", "", "", ""},
+func mockMaskConvertToArray() [][]string {
+	a := make([][]string, 4)
+	for i := range a {
+		a[i] = make([]string, 4)
 	}
+	return a
 }
 
 type FakeRandom struct{}
@@ -316,7 +318,7 @@ func Test_maskConvertToArray(t *testing.T) {
 	tests := []struct {
 		name string
 		args args
-		want [4][4]string
+		want [][]string
 	}{
 		{"Test1", args{"AK4.KJ.4....KT987 62.Q6.KJT8.A53 QT8..97532.4 753.T95.6.QJ62"}, mockMaskConvertToArray()},
 		{"Test2", args{"AK4.KJ.4.KT987 62.Q6.KJ T8.A53 QT8..97532.4 753.T95.6.QJ62"}, mockMaskConvertToArray()},
