@@ -72,6 +72,7 @@ func mockMaskConvertToArray() [][]string {
 	}
 	return a
 }
+
 func mockSuit() []int {
 	return []int{48, 44, 40, 36, 32, 28, 24, 20, 16, 12, 8, 4, 0}
 }
