@@ -94,64 +94,6 @@ func nullMaskSuitToArray() [][]int {
 	return r
 }
 
-func randomSuitArray(sh ShuffleInterface, s int) []int {
-	a := getSuit()
-	if s < 0 || s > N_OF_HANDS {
-		s = 0
-	}
-	r := freeRandom(sh, a[s])
-
-	return r
-}
-
-// Shuffle Implement Fisher and Yates shuffle method
-func (rd Random) fYShuffle(n int) []int {
-	var random, temp int
-	t := make([]int, n)
-	for i := range t {
-		t[i] = i
-	}
-	for i := len(t) - 1; i >= 0; i-- {
-		temp = t[i]
-		random = rand.Intn(i + 1)
-		t[i] = t[random]
-		t[random] = temp
-	}
-	return t
-}
-
-func freeRandom(sh ShuffleInterface, a []int) []int {
-	r := sh.fYShuffle(len(a))
-	t := make([]int, len(a))
-	for i, value := range r {
-		t[value] = a[i]
-	}
-	return t
-}
-
-func intInSlice(a int, list []int) int {
-	for _, vlist := range list {
-		if vlist == a {
-			return a
-		}
-	}
-	return NONE
-}
-
-func delta(slice []int, ToRemove []int) []int {
-	var diff []int
-
-	var n int
-
-	for _, vslice := range slice {
-		n = intInSlice(vslice, ToRemove)
-		if n < 0 {
-			diff = append(diff, vslice)
-		}
-	}
-	return diff
-}
-
 func maskSuitToArray(s string) [][]int {
 	a := make([][]int, N_OF_HANDS)
 	for i := range a {
@@ -186,6 +128,64 @@ func maskSuitToArray(s string) [][]int {
 		}
 	}
 	return a
+}
+
+func randomSuitArray(sh ShuffleInterface, s int) []int {
+	a := getSuit()
+	if s < 0 || s > N_OF_HANDS {
+		s = 0
+	}
+	r := dealRandom(sh, a[s])
+
+	return r
+}
+
+// Shuffle Implement Fisher and Yates shuffle method
+func (rd Random) fYShuffle(n int) []int {
+	var random, temp int
+	t := make([]int, n)
+	for i := range t {
+		t[i] = i
+	}
+	for i := len(t) - 1; i >= 0; i-- {
+		temp = t[i]
+		random = rand.Intn(i + 1)
+		t[i] = t[random]
+		t[random] = temp
+	}
+	return t
+}
+
+func dealRandom(sh ShuffleInterface, a []int) []int {
+	r := sh.fYShuffle(len(a))
+	t := make([]int, len(a))
+	for i, value := range r {
+		t[value] = a[i]
+	}
+	return t
+}
+
+func intInSlice(a int, list []int) int {
+	for _, vlist := range list {
+		if vlist == a {
+			return a
+		}
+	}
+	return NONE
+}
+
+func delta(slice []int, ToRemove []int) []int {
+	var diff []int
+
+	var n int
+
+	for _, vslice := range slice {
+		n = intInSlice(vslice, ToRemove)
+		if n < 0 {
+			diff = append(diff, vslice)
+		}
+	}
+	return diff
 }
 
 func maskToArray(pbn string) ([]int, []int) {
@@ -232,7 +232,7 @@ func maskConvertToArray(pbn string) [][]string {
 
 func DealMaskString(sh ShuffleInterface, mask string) string {
 	deal, delta := maskToArray(mask)
-	s := freeRandom(sh, delta)
+	s := dealRandom(sh, delta)
 	k := 0
 	for i, value := range deal {
 		if value == NONE {
@@ -266,7 +266,7 @@ func maskStrToMaskInt(v string, suit int) []int {
 			t -= 2
 			a = append(a, (t<<2)+suit)
 		}
-		if x == "T" {
+		if x == TEN {
 			a = append(a, (8<<2)+suit)
 		}
 		if x == JOKER {

@@ -22,8 +22,7 @@ type (
 	ShuffleInterface interface {
 		fYShuffle(int) []int
 	}
+	Shuffler interface {
+		Shuffle([]int) []int
+	}
 )
-
-type Shuffler interface {
-	Shuffle([]int) []int
-}

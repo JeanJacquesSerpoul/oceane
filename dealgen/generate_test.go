@@ -273,7 +273,7 @@ func TestFreeRandom(t *testing.T) {
 	var sh fakeRandom
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := freeRandom(sh, tt.args.a); !reflect.DeepEqual(got, tt.want) {
+			if got := dealRandom(sh, tt.args.a); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("FreeRandom() = %v, want %v", got, tt.want)
 			}
 		})
