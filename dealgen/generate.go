@@ -127,7 +127,7 @@ func getInitDeal() []int {
 	}
 }
 
-func MaskToArray(pbn string) ([]int, []int) {
+func maskToArray(pbn string) ([]int, []int) {
 	s := maskConvertToArray(pbn)
 	var r, w, d []int
 	for i := 0; i < N_OF_HANDS; i++ {
@@ -170,7 +170,7 @@ func maskConvertToArray(pbn string) [][]string {
 }
 
 func DealMaskString(sh ShuffleInterface, mask string) string {
-	deal, delta := MaskToArray(mask)
+	deal, delta := maskToArray(mask)
 	s := freeRandom(sh, delta)
 	k := 0
 	for i, value := range deal {
