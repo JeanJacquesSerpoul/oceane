@@ -110,7 +110,7 @@ func TestCardSuitInt(t *testing.T) {
 		want int
 	}{
 		{"Test1", args{17}, 1},
-		{"Test1", args{19}, 3},
+		{"Test2", args{19}, 3},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
@@ -131,7 +131,7 @@ func Test_convertCardsToString(t *testing.T) {
 		want string
 	}{
 		{"Test1", args{mockHand()}, "666777K888A99"},
-		{"Test1", args{mockHandWithUndef()}, "6667?7K888A99"},
+		{"Test2", args{mockHandWithUndef()}, "6667?7K888A99"},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
