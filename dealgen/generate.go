@@ -126,6 +126,41 @@ func getInitDeal() []int {
 		36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51,
 	}
 }
+func maskSuitToArray(s string) [][]int {
+	a := make([][]int, N_OF_HANDS)
+	for i := range a {
+		a[i] = make([]int, N_OF_SUITS)
+	}
+	hand := strings.Split(s, SPACE)
+	if len(hand) != N_OF_HANDS {
+		return a
+	}
+	for i, v := range hand {
+		if v != MINUS {
+			suit := strings.Split(v, POINT)
+			if len(suit) != N_OF_SUITS {
+				return a
+			}
+			w1, err := strconv.Atoi(suit[0])
+			if err == nil {
+				a[i][0] = w1
+			}
+			w2, err := strconv.Atoi(suit[1])
+			if err == nil {
+				a[i][1] = w2
+			}
+			w3, err := strconv.Atoi(suit[2])
+			if err == nil {
+				a[i][2] = w3
+			}
+			w4, err := strconv.Atoi(suit[3])
+			if err == nil {
+				a[i][3] = w4
+			}
+		}
+	}
+	return a
+}
 
 func maskToArray(pbn string) ([]int, []int) {
 	s := maskConvertToArray(pbn)
