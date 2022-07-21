@@ -71,6 +71,11 @@ func init() {
 	rand.Seed(time.Now().UnixNano())
 }
 
+func nullMaskSuitToArray() [][]int {
+	r := [][]int{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}
+	return r
+}
+
 // Shuffle Implement Fisher and Yates shuffle method
 func (rd Random) fYShuffle(n int) []int {
 	var random, temp int
@@ -133,13 +138,13 @@ func maskSuitToArray(s string) [][]int {
 	}
 	hand := strings.Split(s, SPACE)
 	if len(hand) != N_OF_HANDS {
-		return a
+		return nullMaskSuitToArray()
 	}
 	for i, v := range hand {
 		if v != MINUS {
 			suit := strings.Split(v, POINT)
 			if len(suit) != N_OF_SUITS {
-				return a
+				return nullMaskSuitToArray()
 			}
 			w1, err := strconv.Atoi(suit[0])
 			if err == nil {

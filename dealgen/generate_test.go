@@ -57,6 +57,11 @@ func mockMaskSuitToArray() [][]int {
 	r := [][]int{{5, 4, 4, 1}, {8, 7, 6, 2}, {1, 3, 6, 0}, {1, 2, 3, 1}}
 	return r
 }
+
+func mockNullMaskSuitToArray() [][]int {
+	r := [][]int{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}
+	return r
+}
 func mockMaskConvertToArray() [][]string {
 	a := make([][]string, 4)
 	for i := range a {
@@ -346,6 +351,8 @@ func Test_maskSuitToArray(t *testing.T) {
 		want [][]int
 	}{
 		{"Test1", args{"5.4.4.1 8.7.6.2 1.3.6.0 1.2.3.1"}, mockMaskSuitToArray()},
+		{"Test2", args{"5.4.4.18.7.6.2 1.3.6.0 1.2.3.1"}, mockNullMaskSuitToArray()},
+		{"Test2", args{"5.4.4.1 8.76.2 1.3.6.0 1.2.3.1"}, mockNullMaskSuitToArray()},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
