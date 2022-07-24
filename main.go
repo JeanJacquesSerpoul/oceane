@@ -7,6 +7,7 @@ import (
 
 func main() {
 	var sh dealgen.Random
-	r := dealgen.DealSuitString(sh, "0.0.0. ... ... ...")
-	fmt.Println(r)
+	r := "6.4.1.2 ..0. ... ..."
+	t := dealgen.MultiPbnDealToFile(sh, "test.pbn", 1, 100, 1, 0, 0, r)
+	fmt.Println(t)
 }
