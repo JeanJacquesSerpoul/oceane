@@ -273,6 +273,7 @@ func DealSuitArray(sh ShuffleInterface, mask string) []int {
 		for i := 0; i < N_OF_HANDS; i++ {
 			sk = append(sk, w[i]...)
 		}
+		sk = dealRandom(sh, sk)
 		for i := 0; i < N_OF_HANDS; i++ {
 			authSuit := setAuthSuit(s, i)
 			n := N_HANDS - len(tt[i])
