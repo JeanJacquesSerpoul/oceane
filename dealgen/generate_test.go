@@ -398,7 +398,7 @@ func TestDealSuitString(t *testing.T) {
 		args args
 		want string
 	}{
-		{"Test1", args{"1.0.3. ... ... ..."}, "A..AKQ.AKQJT9876 KQJT98765432.A.. .KQJT98765432.J. ..T98765432.5432"},
+		{"Test1", args{"1.0.3. ... ... ..."}, "A..AKQ.T98765432 ..T98765432.AKQJ .KQJT98765432.J. KQJT98765432.A.."},
 	}
 	var sh fakeRandom
 	for _, tt := range tests {
