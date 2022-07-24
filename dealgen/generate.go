@@ -90,14 +90,22 @@ func getSuit() [][]int {
 }
 
 func nullMaskSuitToArray() [][]int {
-	r := [][]int{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}
+	r := [][]int{
+		{NONE, NONE, NONE, NONE},
+		{NONE, NONE, NONE, NONE},
+		{NONE, NONE, NONE, NONE},
+		{NONE, NONE, NONE, NONE},
+	}
 	return r
 }
 
-func maskSuitToArray(s string) [][]int {
+func MaskSuitToArray(s string) [][]int {
 	a := make([][]int, N_OF_HANDS)
 	for i := range a {
 		a[i] = make([]int, N_OF_SUITS)
+		for j := range a[i] {
+			a[i][j] = NONE
+		}
 	}
 	hand := strings.Split(s, SPACE)
 	if len(hand) != N_OF_HANDS {
@@ -109,21 +117,11 @@ func maskSuitToArray(s string) [][]int {
 			if len(suit) != N_OF_SUITS {
 				return nullMaskSuitToArray()
 			}
-			w1, err := strconv.Atoi(suit[0])
-			if err == nil {
-				a[i][0] = w1
-			}
-			w2, err := strconv.Atoi(suit[1])
-			if err == nil {
-				a[i][1] = w2
-			}
-			w3, err := strconv.Atoi(suit[2])
-			if err == nil {
-				a[i][2] = w3
-			}
-			w4, err := strconv.Atoi(suit[3])
-			if err == nil {
-				a[i][3] = w4
+			for k := range suit {
+				w, err := strconv.Atoi(suit[k])
+				if err == nil {
+					a[i][k] = w
+				}
 			}
 		}
 	}
@@ -230,7 +228,74 @@ func maskConvertToArray(pbn string) [][]string {
 	return a
 }
 
+func setAuthSuit(mask [][]int, h int) []int {
+	var r []int
+	for i := 0; i < N_OF_SUITS; i++ {
+		if mask[h][i] == NONE {
+			r = append(r, i)
+		}
+	}
+	return r
+}
+
+func extractFromRandom(authSuit, sk []int, n int) []int {
+	var r []int
+	k := 0
+	for i := 0; i < len(sk); i++ {
+		for j := 0; j < len(authSuit); j++ {
+			if cardSuitInt(sk[i]) == authSuit[j] {
+				r = append(r, sk[i])
+				k++
+				if k >= n {
+					return r
+				}
+			}
+		}
+	}
+	return r
+}
+
+func DealSuitArray(sh ShuffleInterface, mask string) []int {
+	var w, tt [N_OF_HANDS][]int
+	var sv, sk []int
+	s := MaskSuitToArray(mask)
+	for i := 0; i < N_OF_HANDS; i++ {
+		w[i] = append(w[i], randomSuitArray(sh, i)...)
+	}
+	for i := 0; i < N_OF_HANDS; i++ {
+		for j := 0; j < N_OF_SUITS; j++ {
+			v := s[i][j]
+			if v != NONE {
+				tt[i] = append(tt[i], w[j][0:v]...)
+				w[j] = delta(w[j], w[j][0:v])
+			}
+		}
+		for i := 0; i < N_OF_HANDS; i++ {
+			sk = append(sk, w[i]...)
+		}
+		for i := 0; i < N_OF_HANDS; i++ {
+			authSuit := setAuthSuit(s, i)
+			n := N_HANDS - len(tt[i])
+			r := extractFromRandom(authSuit, sk, n)
+			sk = delta(sk, r)
+			tt[i] = append(tt[i], r...)
+		}
+		for i := 0; i < N_OF_HANDS; i++ {
+			sv = append(sv, tt[i]...)
+		}
+	}
+	return sv
+}
+
+func DealSuitString(sh ShuffleInterface, mask string) string {
+	return pbnDealSimple(DealSuitArray(sh, mask))
+}
+
 func DealMaskString(sh ShuffleInterface, mask string) string {
+	return pbnDealSimple(DealMaskArray(sh, mask))
+}
+
+func DealMaskArray(sh ShuffleInterface, mask string) []int {
 	deal, delta := maskToArray(mask)
 	s := dealRandom(sh, delta)
 	k := 0
@@ -240,9 +305,8 @@ func DealMaskString(sh ShuffleInterface, mask string) string {
 			k++
 		}
 	}
-	return pbnDealSimple(deal)
+	return deal
 }
-
 func cardValueInt(cardValue int) int { return cardValue >> 2 }
 
 func cardSuitInt(cardValue int) int { return cardValue & 3 }

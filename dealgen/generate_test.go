@@ -41,6 +41,10 @@ func mockSuitHand() []int {
 	}
 }
 
+func mockAuthSuit() []int {
+	return []int{1, 2}
+}
+
 func mockSortHand() []int {
 	return []int{
 		50, 45, 28, 29, 24, 25, 26, 21, 22, 20, 19, 18, 17,
@@ -57,11 +61,6 @@ func mockPbnSimple() string {
 
 func mockMaskSuitToArray() [][]int {
 	r := [][]int{{5, 4, 4, 1}, {8, 7, 6, 2}, {1, 3, 6, 0}, {1, 2, 3, 1}}
-	return r
-}
-
-func mockNullMaskSuitToArray() [][]int {
-	r := [][]int{{0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}, {0, 0, 0, 0}}
 	return r
 }
 
@@ -356,12 +355,12 @@ func Test_maskSuitToArray(t *testing.T) {
 		want [][]int
 	}{
 		{"Test1", args{"5.4.4.1 8.7.6.2 1.3.6.0 1.2.3.1"}, mockMaskSuitToArray()},
-		{"Test2", args{"5.4.4.18.7.6.2 1.3.6.0 1.2.3.1"}, mockNullMaskSuitToArray()},
-		{"Test3", args{"5.4.4.1 8.76.2 1.3.6.0 1.2.3.1"}, mockNullMaskSuitToArray()},
+		{"Test2", args{"5.4.4.18.7.6.2 1.3.6.0 1.2.3.1"}, nullMaskSuitToArray()},
+		{"Test3", args{"5.4.4.1 8.76.2 1.3.6.0 1.2.3.1"}, nullMaskSuitToArray()},
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := maskSuitToArray(tt.args.s); !reflect.DeepEqual(got, tt.want) {
+			if got := MaskSuitToArray(tt.args.s); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("maskSuitToArray() = %v, want %v", got, tt.want)
 			}
 		})
@@ -385,6 +384,49 @@ func Test_randomSuitArray(t *testing.T) {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := randomSuitArray(sh, tt.args.s); !reflect.DeepEqual(got, tt.want) {
 				t.Errorf("randomSuitArray() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func TestDealSuitString(t *testing.T) {
+	type args struct {
+		mask string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{"Test1", args{"1.0.3. ... ... ..."}, "A..AKQ.AKQJT9876 KQJT98765432.A.. .KQJT98765432.J. ..T98765432.5432"},
+	}
+	var sh fakeRandom
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := DealSuitString(sh, tt.args.mask); got != tt.want {
+				t.Errorf("DealSuitString() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}
+
+func Test_extractFromRandom(t *testing.T) {
+	type args struct {
+		authSuit []int
+		sk       []int
+		n        int
+	}
+	tests := []struct {
+		name string
+		args args
+		want []int
+	}{
+		{"Test1", args{mockAuthSuit(), nil, 5}, nil},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := extractFromRandom(tt.args.authSuit, tt.args.sk, tt.args.n); !reflect.DeepEqual(got, tt.want) {
+				t.Errorf("extractFromRandom() = %v, want %v", got, tt.want)
 			}
 		})
 	}
