@@ -16,6 +16,7 @@ const (
 	KING       = "K"
 	ACE        = "A"
 	TAB        = "\t"
+	MAXPOINTS  = 37
 )
 
 type dataPoints struct {

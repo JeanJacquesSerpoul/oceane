@@ -431,3 +431,24 @@ func Test_extractFromRandom(t *testing.T) {
 		})
 	}
 }
+
+func TestDealPointsString(t *testing.T) {
+	type args struct {
+		mask string
+	}
+	tests := []struct {
+		name string
+		args args
+		want string
+	}{
+		{"Test1", args{"16.5.0."}, "A..AKQ.T98765432 ..T98765432.AKQJ .KQJT98765432.J. KQJT98765432.A.."},
+	}
+	var sh fakeRandom
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := DealPointsString(sh, tt.args.mask); got != tt.want {
+				t.Errorf("DealPointsString() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

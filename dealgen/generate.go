@@ -105,7 +105,12 @@ func cardsWithPoints() []int {
 		36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51,
 	}
 }
-func DealPointsArray(sh ShuffleInterface, mask string) []int {
+
+func DealPointsString(sh ShuffleInterface, mask string) string {
+	return pbnDealSimple(dealPointsArray(sh, mask))
+}
+
+func dealPointsArray(sh ShuffleInterface, mask string) []int {
 	var r, a []int
 	points := strings.Split(mask, POINT)
 	for _, v := range points {
@@ -120,23 +125,45 @@ func DealPointsArray(sh ShuffleInterface, mask string) []int {
 			}
 		}
 	}
+	cwp := cardsWithPoints()
 	rd := dealRandom(sh, getInitDeal())
 	rd = delta(rd, cardsWithPoints())
 	for i, v := range a {
-		if v != NONE {
-			dp := getRandomWithPoint(sh, v)
+		if v != NONE && v != 0 {
+			dp := getRandomWithPoint(sh, cwp, v)
 			r = append(r, dp.dist...)
+			cwp = delta(cwp, dp.dist)
 			l := N_HANDS - len(dp.dist)
 			h := rd[i*N_HANDS : i*N_HANDS+l]
 			r = append(r, h...)
 			rd = delta(rd, h)
 		}
 	}
+	rd = append(rd, cwp...)
+	if len(rd) > 0 {
+		k := 0
+		rd := dealRandom(sh, rd)
+		for _, v := range a {
+			if v == NONE || v == 0 {
+				if v == 0 {
+					rz := delta(rd, cardsWithPoints())
+					h := rz[k*N_HANDS : k*N_HANDS+N_HANDS]
+					r = append(r, h...)
+					rd = delta(rd, h)
+				} else {
+					h := rd[k*N_HANDS : k*N_HANDS+N_HANDS]
+					r = append(r, h...)
+					k++
+				}
+			}
+		}
+	}
 	return r
 }
-func getRandomWithPoint(sh ShuffleInterface, k int) dataPoints {
+
+func getRandomWithPoint(sh ShuffleInterface, seq []int, k int) dataPoints {
 	var v []dataPoints
-	a := allListPoint()
+	a := allListPoint(seq)
 	for _, va := range a {
 		if va.points == k {
 			v = append(v, va)
@@ -146,10 +173,11 @@ func getRandomWithPoint(sh ShuffleInterface, k int) dataPoints {
 	dp := v[r[0]]
 	return dp
 }
-func allListPoint() []dataPoints {
+
+func allListPoint(seq []int) []dataPoints {
 	var r []dataPoints
-	for i := 0; i < N_HANDS; i++ {
-		r = append(r, arrayFromListPoint(cardsWithPoints(), i+1)...)
+	for i := 0; i < MAXPOINTS; i++ {
+		r = append(r, arrayFromListPoint(seq, i+1)...)
 	}
 	return r
 }
