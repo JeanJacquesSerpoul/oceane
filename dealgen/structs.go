@@ -15,7 +15,13 @@ const (
 	QUEEN      = "Q"
 	KING       = "K"
 	ACE        = "A"
+	TAB        = "\t"
 )
+
+type dataPoints struct {
+	points int
+	dist   []int
+}
 
 type (
 	Random           struct{}

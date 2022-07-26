@@ -1,6 +1,7 @@
 package dealgen
 
 import (
+	"math"
 	"math/rand"
 	"sort"
 	"strconv"
@@ -97,6 +98,110 @@ func nullMaskSuitToArray() [][]int {
 		{NONE, NONE, NONE, NONE},
 	}
 	return r
+}
+
+func cardsWithPoints() []int {
+	return []int{
+		36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51,
+	}
+}
+func DealPointsArray(sh ShuffleInterface, mask string) []int {
+	var r, a []int
+	points := strings.Split(mask, POINT)
+	for _, v := range points {
+		if strings.TrimSpace(v) == "" {
+			a = append(a, NONE)
+		} else {
+			w, err := strconv.Atoi(v)
+			if err == nil {
+				a = append(a, w)
+			} else {
+				a = append(a, NONE)
+			}
+		}
+	}
+	rd := dealRandom(sh, getInitDeal())
+	rd = delta(rd, cardsWithPoints())
+	for i, v := range a {
+		if v != NONE {
+			dp := getRandomWithPoint(sh, v)
+			r = append(r, dp.dist...)
+			l := N_HANDS - len(dp.dist)
+			h := rd[i*N_HANDS : i*N_HANDS+l]
+			r = append(r, h...)
+			rd = delta(rd, h)
+		}
+	}
+	return r
+}
+func getRandomWithPoint(sh ShuffleInterface, k int) dataPoints {
+	var v []dataPoints
+	a := allListPoint()
+	for _, va := range a {
+		if va.points == k {
+			v = append(v, va)
+		}
+	}
+	r := sh.fYShuffle(len(v))
+	dp := v[r[0]]
+	return dp
+}
+func allListPoint() []dataPoints {
+	var r []dataPoints
+	for i := 0; i < N_HANDS; i++ {
+		r = append(r, arrayFromListPoint(cardsWithPoints(), i+1)...)
+	}
+	return r
+}
+
+func arrayFromListPoint(seq []int, k int) []dataPoints {
+	var m int
+	var tp dataPoints
+	var p []dataPoints
+	v := genereListPoint(seq, k)
+	m = len(v) / k
+	t := make([][]int, m)
+
+	for i := 0; i < m; i++ {
+		for j := 0; j < k; j++ {
+			t[i] = append(t[i], v[i*k+j])
+		}
+	}
+	for i := range t {
+		tp.points = pointsFromHand(t[i])
+		tp.dist = t[i]
+		p = append(p, tp)
+	}
+	return p
+}
+
+func genereListPoint(seq []int, k int) []int {
+	var p, s []int
+
+	var ii, jj uint
+
+	fmax := math.Exp2((float64)(len(seq))) - 1
+	imax := int(fmax)
+
+	for i := 0; i <= imax; i++ {
+		s = nil
+		jmax := len(seq) - 1
+
+		for j := 0; j <= jmax; j++ {
+			ii = uint(i)
+			jj = uint(j)
+
+			if (ii>>jj)&1 == 1 {
+				s = append(s, seq[j])
+			}
+		}
+
+		if len(s) == k {
+			p = append(p, s...)
+		}
+	}
+
+	return p
 }
 
 func MaskSuitToArray(s string) [][]int {
@@ -255,7 +360,7 @@ func extractFromRandom(authSuit, sk []int, n int) []int {
 	return r
 }
 
-func DealSuitArray(sh ShuffleInterface, mask string) []int {
+func dealSuitArray(sh ShuffleInterface, mask string) []int {
 	var w, tt [N_OF_HANDS][]int
 	var sv, sk []int
 	s := MaskSuitToArray(mask)
@@ -289,7 +394,7 @@ func DealSuitArray(sh ShuffleInterface, mask string) []int {
 }
 
 func DealSuitString(sh ShuffleInterface, mask string) string {
-	return pbnDealSimple(DealSuitArray(sh, mask))
+	return pbnDealSimple(dealSuitArray(sh, mask))
 }
 
 func DealMaskString(sh ShuffleInterface, mask string) string {
