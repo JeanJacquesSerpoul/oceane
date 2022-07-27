@@ -1,6 +1,7 @@
 package dealgen
 
 import (
+	"fmt"
 	"math"
 	"math/rand"
 	"sort"
@@ -106,11 +107,15 @@ func cardsWithPoints() []int {
 	}
 }
 
-func DealPointsString(sh ShuffleInterface, mask string) string {
-	return pbnDealSimple(dealPointsArray(sh, mask))
+func DealPointsString(sh ShuffleInterface, mask string) (string, error) {
+	r, err := dealPointsArray(sh, mask)
+	if err != nil {
+		return "", err
+	}
+	return pbnDealSimple(r), nil
 }
 
-func dealPointsArray(sh ShuffleInterface, mask string) []int {
+func dealPointsArray(sh ShuffleInterface, mask string) ([]int, error) {
 	var r, a []int
 	points := strings.Split(mask, POINT)
 	for _, v := range points {
@@ -130,7 +135,10 @@ func dealPointsArray(sh ShuffleInterface, mask string) []int {
 	rd = delta(rd, cardsWithPoints())
 	for i, v := range a {
 		if v != NONE && v != 0 {
-			dp := getRandomWithPoint(sh, cwp, v)
+			dp, err := getRandomWithPoint(sh, cwp, v)
+			if err != nil {
+				return r, err
+			}
 			r = append(r, dp.dist...)
 			cwp = delta(cwp, dp.dist)
 			l := N_HANDS - len(dp.dist)
@@ -158,20 +166,25 @@ func dealPointsArray(sh ShuffleInterface, mask string) []int {
 			}
 		}
 	}
-	return r
+	return r, nil
 }
 
-func getRandomWithPoint(sh ShuffleInterface, seq []int, k int) dataPoints {
+func getRandomWithPoint(sh ShuffleInterface, seq []int, k int) (dataPoints, error) {
 	var v []dataPoints
+	var dp dataPoints
 	a := allListPoint(seq)
 	for _, va := range a {
 		if va.points == k {
 			v = append(v, va)
 		}
 	}
+	if v == nil {
+		err := fmt.Errorf("NO SOLUTION")
+		return dp, err
+	}
 	r := sh.fYShuffle(len(v))
-	dp := v[r[0]]
-	return dp
+	dp = v[r[0]]
+	return dp, nil
 }
 
 func allListPoint(seq []int) []dataPoints {
