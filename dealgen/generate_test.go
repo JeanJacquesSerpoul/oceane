@@ -431,3 +431,32 @@ func Test_extractFromRandom(t *testing.T) {
 		})
 	}
 }
+
+func TestDealPointsString(t *testing.T) {
+	type args struct {
+		mask string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    string
+		wantErr bool
+	}{
+		{"Test1", args{"16.5.0."}, "", true},
+		{"Test2", args{"5.3.0."}, "T9.JT9.JT9.QJT98 J543.543.Q43.432 762.762.7652.765 AKQ8.AKQ8.AK8.AK", false},
+		{"Test3", args{"5.3.A."}, "T9.JT9.JT9.QJT98 J543.543.Q43.432 AKQ2.AKQ2.AK2.AK 876.876.8765.765", false},
+	}
+	var sh fakeRandom
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := DealPointsString(sh, tt.args.mask)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("DealPointsString() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("DealPointsString() = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

@@ -179,7 +179,7 @@ func getRandomWithPoint(sh ShuffleInterface, seq []int, k int) (dataPoints, erro
 		}
 	}
 	if v == nil {
-		err := fmt.Errorf("NO SOLUTION")
+		err := fmt.Errorf("1")
 		return dp, err
 	}
 	r := sh.fYShuffle(len(v))
