@@ -107,7 +107,15 @@ func cardsWithPoints() []int {
 	}
 }
 
-func DealPointsString(sh ShuffleInterface, mask string) (string, error) {
+func DealSuitString(sh ShuffleInterface, mask string) string {
+	return pbnDealSimple(dealSuitArray(sh, mask))
+}
+
+func DealMaskString(sh ShuffleInterface, mask string) string {
+	return pbnDealSimple(DealMaskArray(sh, mask))
+}
+
+func DealPointsString(sh ShuffleInterface, mask string) string {
 	var r []int
 	var err error
 	for i := 0; i < MAXTRY; i++ {
@@ -117,9 +125,9 @@ func DealPointsString(sh ShuffleInterface, mask string) (string, error) {
 		}
 	}
 	if err != nil {
-		return "", err
+		return ""
 	}
-	return pbnDealSimple(r), nil
+	return pbnDealSimple(r)
 }
 
 func dealPointsArray(sh ShuffleInterface, mask string) ([]int, error) {
@@ -446,14 +454,6 @@ func dealSuitArray(sh ShuffleInterface, mask string) []int {
 		}
 	}
 	return sv
-}
-
-func DealSuitString(sh ShuffleInterface, mask string) (string, error) {
-	return pbnDealSimple(dealSuitArray(sh, mask)), nil
-}
-
-func DealMaskString(sh ShuffleInterface, mask string) (string, error) {
-	return pbnDealSimple(DealMaskArray(sh, mask)), nil
 }
 
 func DealMaskArray(sh ShuffleInterface, mask string) []int {
