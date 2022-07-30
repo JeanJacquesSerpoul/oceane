@@ -28,17 +28,23 @@ func pbnDeal(firstHand, dealer, vul int, deal string) string {
 }
 
 func MultiPbnDeal(sh ShuffleInterface, mode, ite, firstHand, dealer, vul int, mask string) string {
+	var err error
 	deal := ""
 	r := ""
 	for i := 0; i < ite; i++ {
 		if mode == 0 {
-			deal = DealMaskString(sh, mask)
+			deal, err = DealMaskString(sh, mask)
 		}
 		if mode == 1 {
-			deal = DealSuitString(sh, mask)
+			deal, err = DealSuitString(sh, mask)
 		}
-		r += pbnDeal(firstHand, dealer, vul, deal)
-		r += "\n\n"
+		if mode == 2 {
+			deal, err = DealPointsString(sh, mask)
+		}
+		if err == nil {
+			r += pbnDeal(firstHand, dealer, vul, deal)
+			r += "\n\n"
+		}
 	}
 	return r
 }

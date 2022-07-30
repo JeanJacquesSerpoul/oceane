@@ -8,6 +8,6 @@ import (
 func main() {
 	var sh dealgen.Random
 
-	t, err := dealgen.DealPointsString(sh, "5.3.0.")
-	fmt.Println(t, err)
+	t := dealgen.MultiPbnDeal(sh, 2, 10, 0, 0, 0, "20..17.0")
+	fmt.Println(t)
 }

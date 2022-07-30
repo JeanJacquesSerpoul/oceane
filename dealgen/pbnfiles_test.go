@@ -13,6 +13,15 @@ func mockPbn() string {
 	return v
 }
 
+func mockPbnPoint() string {
+	v := `[Dealer "N"]
+[Vulnerable "ALL"]
+[Deal "N:QJ.QJT.AQJT.AQJT K432.432.432.432 A65.AK65.K65.K65 T987.987.987.987"]
+
+`
+	return v
+}
+
 func mockMaskPbn() string {
 	v := `[Dealer "N"]
 [Vulnerable "ALL"]
@@ -44,6 +53,7 @@ func TestMultiPbnDeal(t *testing.T) {
 		},
 		{"Test3", args{1, 1, 8, 0, 0, "6.4.1.2 ... ... ..."}, mockPbn()},
 		{"Test4", args{1, 1, 0, 0, 8, "6.4.1.2 ... ... ..."}, mockPbn()},
+		{"Test5", args{2, 1, 0, 0, 0, "20..17.0"}, mockPbnPoint()},
 	}
 	var sh fakeRandom
 	for _, tt := range tests {

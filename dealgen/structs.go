@@ -17,6 +17,7 @@ const (
 	ACE        = "A"
 	TAB        = "\t"
 	MAXPOINTS  = 37
+	MAXTRY     = 10
 )
 
 type dataPoints struct {

@@ -108,7 +108,14 @@ func cardsWithPoints() []int {
 }
 
 func DealPointsString(sh ShuffleInterface, mask string) (string, error) {
-	r, err := dealPointsArray(sh, mask)
+	var r []int
+	var err error
+	for i := 0; i < MAXTRY; i++ {
+		r, err = dealPointsArray(sh, mask)
+		if err == nil {
+			break
+		}
+	}
 	if err != nil {
 		return "", err
 	}
@@ -133,36 +140,43 @@ func dealPointsArray(sh ShuffleInterface, mask string) ([]int, error) {
 	cwp := cardsWithPoints()
 	rd := dealRandom(sh, getInitDeal())
 	rd = delta(rd, cardsWithPoints())
-	for i, v := range a {
+	tp := make([][]int, N_OF_HANDS)
+	i := 0
+	for _, v := range a {
 		if v != NONE && v != 0 {
+			var rt []int
 			dp, err := getRandomWithPoint(sh, cwp, v)
 			if err != nil {
 				return r, err
 			}
-			r = append(r, dp.dist...)
+			rt = append(rt, dp.dist...)
 			cwp = delta(cwp, dp.dist)
 			l := N_HANDS - len(dp.dist)
 			h := rd[i*N_HANDS : i*N_HANDS+l]
-			r = append(r, h...)
+			rt = append(rt, h...)
 			rd = delta(rd, h)
+			tp[i] = append(tp[i], rt...)
+			i++
 		}
 	}
 	rd = append(rd, cwp...)
 	if len(rd) > 0 {
-		k := 0
-		rd := dealRandom(sh, rd)
+		m := 0
+		rd = dealRandom(sh, rd)
+		var h []int
 		for _, v := range a {
 			if v == NONE || v == 0 {
 				if v == 0 {
 					rz := delta(rd, cardsWithPoints())
-					h := rz[k*N_HANDS : k*N_HANDS+N_HANDS]
-					r = append(r, h...)
-					rd = delta(rd, h)
+					h = rz[0:N_HANDS]
 				} else {
-					h := rd[k*N_HANDS : k*N_HANDS+N_HANDS]
-					r = append(r, h...)
-					k++
+					h = rd[0:N_HANDS]
 				}
+				r = append(r, h...)
+				rd = delta(rd, h)
+			} else {
+				r = append(r, tp[m]...)
+				m++
 			}
 		}
 	}
@@ -434,12 +448,12 @@ func dealSuitArray(sh ShuffleInterface, mask string) []int {
 	return sv
 }
 
-func DealSuitString(sh ShuffleInterface, mask string) string {
-	return pbnDealSimple(dealSuitArray(sh, mask))
+func DealSuitString(sh ShuffleInterface, mask string) (string, error) {
+	return pbnDealSimple(dealSuitArray(sh, mask)), nil
 }
 
-func DealMaskString(sh ShuffleInterface, mask string) string {
-	return pbnDealSimple(DealMaskArray(sh, mask))
+func DealMaskString(sh ShuffleInterface, mask string) (string, error) {
+	return pbnDealSimple(DealMaskArray(sh, mask)), nil
 }
 
 func DealMaskArray(sh ShuffleInterface, mask string) []int {
