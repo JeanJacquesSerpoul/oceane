@@ -58,7 +58,7 @@ func TestMultiPbnDeal(t *testing.T) {
 	var sh fakeRandom
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := MultiPbnDeal(sh, tt.args.mode, tt.args.ite, tt.args.firstHand, tt.args.dealer, tt.args.vul, tt.args.mask); got != tt.want {
+			if got := PbnDeal(sh, tt.args.mode, tt.args.ite, tt.args.firstHand, tt.args.dealer, tt.args.vul, tt.args.mask); got != tt.want {
 				t.Errorf("MultiPbnDeal() = %v, want %v", got, tt.want)
 			}
 		})
@@ -86,7 +86,7 @@ func TestMultiPbnDealToFile(t *testing.T) {
 	var sh fakeRandom
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if err := MultiPbnDealToFile(sh, tt.args.filename, tt.args.mode, tt.args.ite, tt.args.firstHand, tt.args.dealer, tt.args.vul, tt.args.mask); (err != nil) != tt.wantErr {
+			if err := PbnDealToFile(sh, tt.args.filename, tt.args.mode, tt.args.ite, tt.args.firstHand, tt.args.dealer, tt.args.vul, tt.args.mask); (err != nil) != tt.wantErr {
 				t.Errorf("MultiPbnDealToFile() error = %v, wantErr %v", err, tt.wantErr)
 			}
 		})
