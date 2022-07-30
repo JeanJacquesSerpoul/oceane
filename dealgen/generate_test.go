@@ -231,7 +231,7 @@ func Test_pointsFromHand(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			if got := pointsFromHand(tt.args.h); got != tt.want {
+			if got := pointsFromDeal(tt.args.h); got != tt.want {
 				t.Errorf("pointsFromHand() = %v, want %v", got, tt.want)
 			}
 		})

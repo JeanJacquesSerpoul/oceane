@@ -1,6 +1,9 @@
 package dealgen
 
-import "os"
+import (
+	"os"
+	"sort"
+)
 
 func position(i int) string {
 	if i < 0 || i > N_OF_HANDS {
@@ -27,23 +30,51 @@ func simplePbnDeal(firstHand, dealer, vul int, deal string) string {
 	return r
 }
 
+func checkDeal(deal []int) int {
+	if len(deal) != N_CARDS {
+		return 1
+	}
+	dealCopy := make([]int, len(deal))
+	copy(dealCopy, deal)
+	sort.Slice(dealCopy, func(i, j int) bool {
+		return dealCopy[i] > dealCopy[j]
+	})
+	for i := 0; i < len(dealCopy); i++ {
+		if dealCopy[i] != len(dealCopy)-i-1 {
+			return 2
+		}
+	}
+	return 0
+}
+
 func PbnDeal(sh ShuffleInterface, mode, ite, firstHand, dealer, vul int, mask string) string {
 	deal := ""
-	r := ""
-	for i := 0; i < ite; i++ {
+	rs := ""
+	var r []int
+	i := 0
+	k := 0
+	for i < ite {
 		if mode == 0 {
-			deal = DealMaskString(sh, mask)
+			r = DealMaskArray(sh, mask)
 		}
 		if mode == 1 {
-			deal = DealSuitString(sh, mask)
+			r = DealSuitArray(sh, mask)
 		}
 		if mode == 2 {
-			deal = DealPointsString(sh, mask)
+			r, _ = DealPointArrayPlus(sh, mask)
 		}
-		r += simplePbnDeal(firstHand, dealer, vul, deal)
-		r += "\n\n"
+		if checkDeal(r) == 0 {
+			deal = pbnDealSimple(r)
+			rs += simplePbnDeal(firstHand, dealer, vul, deal)
+			rs += "\n\n"
+			i++
+		}
+		k++
+		if k == INFINITE {
+			return ""
+		}
 	}
-	return r
+	return rs
 }
 
 func PbnDealToFile(sh ShuffleInterface, filename string, mode, ite, firstHand, dealer, vul int, mask string) error {

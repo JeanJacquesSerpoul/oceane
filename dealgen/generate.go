@@ -108,7 +108,7 @@ func cardsWithPoints() []int {
 }
 
 func DealSuitString(sh ShuffleInterface, mask string) string {
-	return pbnDealSimple(dealSuitArray(sh, mask))
+	return pbnDealSimple(DealSuitArray(sh, mask))
 }
 
 func DealMaskString(sh ShuffleInterface, mask string) string {
@@ -116,6 +116,11 @@ func DealMaskString(sh ShuffleInterface, mask string) string {
 }
 
 func DealPointsString(sh ShuffleInterface, mask string) string {
+	r, _ := DealPointArrayPlus(sh, mask)
+	return pbnDealSimple(r)
+}
+
+func DealPointArrayPlus(sh ShuffleInterface, mask string) ([]int, error) {
 	var r []int
 	var err error
 	for i := 0; i < MAXTRY; i++ {
@@ -124,10 +129,7 @@ func DealPointsString(sh ShuffleInterface, mask string) string {
 			break
 		}
 	}
-	if err != nil {
-		return ""
-	}
-	return pbnDealSimple(r)
+	return r, err
 }
 
 func dealPointsArray(sh ShuffleInterface, mask string) ([]int, error) {
@@ -211,7 +213,7 @@ func getRandomWithPoint(sh ShuffleInterface, seq []int, k int) (dataPoints, erro
 
 func allListPoint(seq []int) []dataPoints {
 	var r []dataPoints
-	for i := 0; i < MAXPOINTS; i++ {
+	for i := 0; i < MAXPOINTSHAND; i++ {
 		r = append(r, arrayFromListPoint(seq, i+1)...)
 	}
 	return r
@@ -231,7 +233,7 @@ func arrayFromListPoint(seq []int, k int) []dataPoints {
 		}
 	}
 	for i := range t {
-		tp.points = pointsFromHand(t[i])
+		tp.points = pointsFromDeal(t[i])
 		tp.dist = t[i]
 		p = append(p, tp)
 	}
@@ -423,7 +425,7 @@ func extractFromRandom(authSuit, sk []int, n int) []int {
 	return r
 }
 
-func dealSuitArray(sh ShuffleInterface, mask string) []int {
+func DealSuitArray(sh ShuffleInterface, mask string) []int {
 	var w, tt [N_OF_HANDS][]int
 	var sv, sk []int
 	s := MaskSuitToArray(mask)
@@ -438,20 +440,20 @@ func dealSuitArray(sh ShuffleInterface, mask string) []int {
 				w[j] = delta(w[j], w[j][0:v])
 			}
 		}
-		for i := 0; i < N_OF_HANDS; i++ {
-			sk = append(sk, w[i]...)
-		}
-		sk = dealRandom(sh, sk)
-		for i := 0; i < N_OF_HANDS; i++ {
-			authSuit := setAuthSuit(s, i)
-			n := N_HANDS - len(tt[i])
-			r := extractFromRandom(authSuit, sk, n)
-			sk = delta(sk, r)
-			tt[i] = append(tt[i], r...)
-		}
-		for i := 0; i < N_OF_HANDS; i++ {
-			sv = append(sv, tt[i]...)
-		}
+	}
+	for i := 0; i < N_OF_HANDS; i++ {
+		sk = append(sk, w[i]...)
+	}
+	sk = dealRandom(sh, sk)
+	for i := 0; i < N_OF_HANDS; i++ {
+		authSuit := setAuthSuit(s, i)
+		n := N_HANDS - len(tt[i])
+		r := extractFromRandom(authSuit, sk, n)
+		sk = delta(sk, r)
+		tt[i] = append(tt[i], r...)
+	}
+	for i := 0; i < N_OF_HANDS; i++ {
+		sv = append(sv, tt[i]...)
 	}
 	return sv
 }
@@ -573,7 +575,7 @@ func getValueCards(i int) int {
 	return valueCards[i]
 }
 
-func pointsFromHand(h []int) int {
+func pointsFromDeal(h []int) int {
 	v := 0
 	for _, value := range h {
 		v += getValueCards(cardValueInt(value))
@@ -584,6 +586,9 @@ func pointsFromHand(h []int) int {
 func pbnDealSimple(a []int) string {
 	var h []int
 	r := ""
+	if a == nil {
+		return ""
+	}
 	for i := 0; i < N_OF_HANDS; i++ {
 		h = a[i*N_HANDS : i*N_HANDS+N_HANDS]
 		r += handPbn(h)

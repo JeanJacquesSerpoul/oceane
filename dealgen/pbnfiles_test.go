@@ -31,7 +31,23 @@ func mockMaskPbn() string {
 	return v
 }
 
-func TestMultiPbnDeal(t *testing.T) {
+func mockArrayCards() []int {
+	return []int{
+		1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+		17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 32, 33, 34, 35,
+		36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51,
+	}
+}
+
+func mockArrayAll() []int {
+	return []int{
+		0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16,
+		17, 18, 19, 20, 21, 22, 23, 24, 25, 26, 27, 28, 29, 30, 31, 33, 33, 34, 35,
+		36, 37, 38, 39, 40, 41, 42, 43, 44, 45, 46, 47, 48, 49, 50, 51,
+	}
+}
+
+func TestPbnDeal(t *testing.T) {
 	type args struct {
 		mode      int
 		ite       int
@@ -59,13 +75,13 @@ func TestMultiPbnDeal(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if got := PbnDeal(sh, tt.args.mode, tt.args.ite, tt.args.firstHand, tt.args.dealer, tt.args.vul, tt.args.mask); got != tt.want {
-				t.Errorf("MultiPbnDeal() = %v, want %v", got, tt.want)
+				t.Errorf("PbnDeal() = %v, want %v", got, tt.want)
 			}
 		})
 	}
 }
 
-func TestMultiPbnDealToFile(t *testing.T) {
+func TestPbnDealToFile(t *testing.T) {
 	type args struct {
 		filename  string
 		mode      int
@@ -87,7 +103,28 @@ func TestMultiPbnDealToFile(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			if err := PbnDealToFile(sh, tt.args.filename, tt.args.mode, tt.args.ite, tt.args.firstHand, tt.args.dealer, tt.args.vul, tt.args.mask); (err != nil) != tt.wantErr {
-				t.Errorf("MultiPbnDealToFile() error = %v, wantErr %v", err, tt.wantErr)
+				t.Errorf("PbnDealToFile() error = %v, wantErr %v", err, tt.wantErr)
+			}
+		})
+	}
+}
+
+func Test_checkDeal(t *testing.T) {
+	type args struct {
+		deal []int
+	}
+	tests := []struct {
+		name string
+		args args
+		want int
+	}{
+		{"Test1", args{mockArrayCards()}, 1},
+		{"Test2", args{mockArrayAll()}, 2},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := checkDeal(tt.args.deal); got != tt.want {
+				t.Errorf("checkDeal() = %v, want %v", got, tt.want)
 			}
 		})
 	}
