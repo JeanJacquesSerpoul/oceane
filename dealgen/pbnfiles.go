@@ -1,6 +1,7 @@
 package dealgen
 
 import (
+	"encoding/json"
 	"os"
 	"sort"
 )
@@ -45,6 +46,30 @@ func checkDeal(deal []int) int {
 		}
 	}
 	return 0
+}
+
+func PbnDealJson(sh ShuffleInterface, mode, mask string) string {
+	var h ResultHTTP
+	deal := ""
+	var r []int
+	if mode == "0" {
+		r = DealMaskArray(sh, mask)
+	}
+	if mode == "1" {
+		r = DealSuitArray(sh, mask)
+	}
+	if mode == "2" {
+		r, _ = DealPointArrayPlus(sh, mask)
+	}
+	if checkDeal(r) == 0 {
+		deal = pbnDealSimple(r)
+	}
+	h.Deal = deal
+	rs, err := json.Marshal(h)
+	if err != nil {
+		return ""
+	}
+	return string(rs)
 }
 
 func PbnDeal(sh ShuffleInterface, mode, ite, firstHand, dealer, vul int, mask string) string {

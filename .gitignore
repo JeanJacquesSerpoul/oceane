@@ -1,2 +1,6 @@
 *.out
 *.pbn
+*.exe
+server/deskserver_arm
+server/deskserver_linux
+distribution/cover.html

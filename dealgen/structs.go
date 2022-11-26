@@ -33,3 +33,8 @@ type (
 		fYShuffle(int) []int
 	}
 )
+
+type ResultHTTP struct {
+	Vul  string `json:"vul"`
+	Deal string `json:"deal"`
+}
